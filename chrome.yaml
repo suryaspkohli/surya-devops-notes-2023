@@ -1,0 +1,17 @@
+---
+- name: setup application server
+  hosts: chetan
+
+  tasks:
+
+  - name: install chrome
+    copy:
+     src: /opt/google-chrome-stable_current_x86_64.rpm
+     dest: /opt/google-chrome-stable_current_x86_64.rpm
+     owner: root
+     group: root
+     mode: '0777'
+
+  - name: install chrome from copied rpm
+    yum: name=/opt/google-chrome-stable_current_x86_64.rpm state=present
+

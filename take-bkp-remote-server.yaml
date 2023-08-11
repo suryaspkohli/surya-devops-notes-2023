@@ -1,0 +1,16 @@
+- hosts: all
+  tasks:
+    - name: Create a backup directory
+      file:
+        path: /backup
+        state: directory
+
+    - name: Create a backup of the server
+      command: tar -czf /backup/backup-{{ ansible_date_time.iso8601_basic }}.tar.gz /home/somesh/.thunderbird
+
+    - name: Copy the backup to local machine
+      fetch:
+        src: /backup/backup-{{ ansible_date_time.iso8601_basic }}.tar.gz
+        dest: /opt/
+
+

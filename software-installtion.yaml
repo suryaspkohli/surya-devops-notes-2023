@@ -1,0 +1,156 @@
+---
+- name: setup application server
+  hosts: demo
+
+  tasks:
+  - name: enable epel for installation
+    yum:  name=epel-release state=present
+
+  - name: install basic tools
+    yum: name={{item}} state=present
+    with_items:
+     - anydesk
+     - thunderbird
+     - filezilla
+
+  - name: install maven
+    copy:
+     src: /opt/maven-3.0.5-17.el7.noarch.rpm
+     dest: /opt/maven-3.0.5-17.el7.noarch.rpm
+     owner: root
+     group: root
+     mode: '0744'
+
+  - name: install maven from copied rpm
+    yum: name=/opt/maven-3.0.5-17.el7.noarch.rpm state=present
+
+ # - name: install git
+    #copy:
+     #src: /opt/endpoint-repo.x86_64.rpm
+     #dest: /opt/endpoint-repo.x86_64.rpm
+     #owner: root
+    # group: root
+   #  mode: '0777'
+
+  #- name: install git from copied rpm
+    #yum: name=git state=present
+    #
+  - name: Copy shell script to remote hosts
+    copy:
+        src: /home/surya/Practice-scripts/software-installtion/git-2.sh
+        dest: /opt/git-2.sh
+        mode: '0755'
+
+  - name: Execute shell script on remote hosts
+    command: sh /opt/git-2.sh
+
+  - name: Download Tomcat 8
+    get_url:
+        url: "https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.72/bin/apache-tomcat-8.5.72.tar.gz"
+        dest: "/tmp/apache-tomcat-8.5.72.tar.gz"
+
+  - name: Extract Tomcat 8
+    unarchive:
+        src: "/tmp/apache-tomcat-8.5.72.tar.gz"
+        dest: "/home/surya/"
+        remote_src: yes
+        owner: root
+        group: root
+        mode: '0777'
+        extra_opts: "--no-same-owner"
+
+  - name: install chrome
+    copy:
+     src: /opt/google-chrome-stable_current_x86_64.rpm
+     dest: /opt/google-chrome-stable_current_x86_64.rpm
+     owner: root
+     group: root
+     mode: '0777'
+
+  - name: install chrome from copied rpm
+    yum: name=/opt/google-chrome-stable_current_x86_64.rpm state=present
+
+
+
+  - name: copy repoof  mongo
+    copy:
+     src: /etc/yum.repos.d/mongodb-org-4.0.repo
+     dest: /etc/yum.repos.d/mongodb-org-4.0.repo
+     owner: root
+     group: root
+     mode: '0777'
+
+  - name: install mongo
+    yum: name=mongodb-org state=present
+
+
+  - name: Copy script to remote hosts
+    copy:
+        src: /home/surya/script-projects/postman-install.sh
+        dest: /opt/postman-install.sh
+        mode: '0777'
+
+  - name: Copy script to remote hosts
+    copy:
+
+        src: /opt/files/postman.desktop
+        dest: /usr/share/applications
+        mode: '0777'
+
+  - name: Execute shell script on remote hosts
+    command: sh /opt/postman-install.sh
+
+
+
+  - name: Copy script to remote hosts
+    copy:
+
+        src: /home/surya/script-projects/mysql-install.sh
+        dest: /opt/mysql-install.sh
+        mode: '0777'
+
+  - name: Execute shell script on remote hosts
+    command: sh /opt/mysql-install.sh
+
+
+  - name: Copy script to remote hosts
+    copy:
+
+        src: /home/surya/Practice-scripts/try/mysql-workbench.sh
+        dest: /opt/mysql-workbench.sh
+        mode: '0777'
+
+  - name: Execute shell script on remote hosts
+    command: sh /opt/mysql-workbench.sh
+
+
+#  - name: Copy script to remote hosts
+#    copy:
+
+#        src: /home/surya/Software/mongochef-4.3.0-linux-x64-dist
+#        dest: /opt/mongochef-4.3.0-linux-x64-dist
+#        mode: '0777'
+
+#  - name: Copy script to remote hosts
+#    copy:
+
+#        src: /opt/files/mongochef.desktop
+#        dest: /usr/share/applications/mongochef.desktop
+#        mode: '0777'
+
+#  - name: Copy script to remote hosts
+#    copy:
+
+#        src: /home/surya/Practice-scripts/try/mongo-chef.sh
+#        dest: /opt/mongo-chef.sh
+#        mode: '0777'
+
+
+#  - name: Execute shell script on remote hosts
+#    command: sh /opt/mongo-chef.sh
+
+
+
+
+
+

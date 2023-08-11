@@ -1,0 +1,15 @@
+---
+- name: load avg trend
+  hosts: Test
+
+  tasks:
+  - name: copy script
+    copy:
+     src: /home/surya/Practice-scripts/try/cpu-load-ram1.sh
+     dest: /opt/cpu-load-ram1.sh
+     mode: '0777'
+
+  - name: Execute shell script on remote hosts
+    command: sh /opt/cpu-load-ram1.sh
+
+

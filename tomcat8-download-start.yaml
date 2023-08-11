@@ -1,0 +1,20 @@
+---
+- name: Download and start Tomcat 8
+  hosts: demo
+  become: yes
+  tasks:
+    - name: Download Tomcat 8
+      get_url:
+        url: "https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.72/bin/apache-tomcat-8.5.72.tar.gz"
+        dest: "/tmp/apache-tomcat-8.5.72.tar.gz"
+
+    - name: Extract Tomcat 8
+      unarchive:
+        src: "/tmp/apache-tomcat-8.5.72.tar.gz"
+        dest: "/home/surya/"
+        remote_src: yes
+        owner: surya
+        group: surya
+        mode: '0777'
+        extra_opts: "--no-same-owner"
+

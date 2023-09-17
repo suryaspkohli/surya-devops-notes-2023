@@ -1,0 +1,19 @@
+-----------------------------------------------------------------------Issue---------------------------------------------------------------------------------------------------
+1- auth qa running but user can not login
+
+solution: re-start 50hz-auth-sel-master service from qa swarm
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2- if the database server memory increase or load 
+
+solution: restart the mysql or mongo
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3- docker swarm status down
+
+solution: set the date bczo date is incorrect
+
+and restart the docker service.
+----------------------------
+4- ftp file uploding issue 0 byte file size while uploading.
+
+disk space issue of wind 3

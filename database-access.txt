@@ -1,0 +1,329 @@
+
+
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'ip_address';
+
+GRANT ALL PRIVILEGES ON database.* TO 'user'@'yourremotehost'IDENTIFIED BY 'newpassword';
+
+GRANT SELECT,UPDATE,INSERT,ALTER ON databasename.* TO 'User'@'yourremotehost' IDENTIFIED BY 'newpassword';
+
+GRANT ALL PRIVILEGES ON samast.* TO 'user'@'ip_address'; (to give access on samast database)
+
+GRANT ALL PRIVILEGES ON *.* TO 'jalaj'@'%'
+SHOW GRANTS FOR 'jalaj'@'%';
+
+CREATE USER 'user'@'ip_address' IDENTIFIED BY 'Admin@1212';
+
+CREATE USER 'adarsh'@'14.99.243.138' IDENTIFIED BY 'Adarsh@1212';
+
+GRANT ALL PRIVILEGES ON epm.* TO 'adarsh'@'14.99.243.138';
+
+
+
+use admin;
+
+db.createUser(
+{
+user: "sneha",
+
+
+pwd: "Sneha@1212",
+roles: [ "read" ]
+}
+);
+
+
+db.getUsers();
+db.getUser("sneha");
+
+db.createUser(
+{
+user: "vijay",
+pwd: "Vijay@1212",
+roles: [ "readWrite" ]
+}
+);
+
+db.createUser(
+{
+user: "sarobar",
+pwd: "Sarobar@1212",
+roles: [ "read" ]
+}
+);
+
+db.createUser({user: "puspendu",pwd: "Poonam@1212",roles: [ "readwrite" ]});
+
+
+
+db.getUser("chetan");
+db.dropUser("abhishek"); ---for version 4
+
+
+db.dropUser("puspendu", {w: "majority", wtimeout: 5000});  ---4 or 6 version
+
+
+
+
+
+
+CREATE USER 'user'@'ip_address' IDENTIFIED BY 'Admin@1212';
+
+CREATE USER 'user'@'%' IDENTIFIED BY 'Admin@1212';
+
+GRANT ALL PRIVILEGES ON *.* TO 'sumanta'@'%';
+
+** Add the ip in IP tables and restart.
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'ip_address';
+
+GRANT ALL PRIVILEGES ON database.* TO 'user'@'yourremotehost'IDENTIFIED BY 'newpassword';
+
+GRANT SELECT,UPDATE,INSERT,ALTER ON databasename.* TO 'User'@'yourremotehost' IDENTIFIED BY 'newpassword';
+
+GRANT ALL PRIVILEGES ON samast.* TO 'user'@'ip_address'; (to give access on samast database)
+
+
+
+
+find . -type f -mtime +90 -exec mv "{}" /home/kafka/Archive-Sync-History/ \; 
+
+
+SELECT user FROM mysql.user;
+show databases;
+use 50hzauth;
+
+delete from mysql.user where user='akash';
+
+ drop user 'vijay'@'14.99.243.138';
+GRANT SELECT,INSERT,UPDATE,ALTER ON hea.* TO 'vijay'@'14.99.243.138';
+GRANT SELECT ON samast.* TO 'dipu'@'118.185.255.98';
+GRANT ALL PRIVILEGES ON 50hzauth.* TO 'anuj'@'182.76.9.122'
+SHOW GRANTS FOR 'vijay'@'14.99.243.138';
+SHOW GRANTS FOR 'adarsh'@'14.99.243.138';
+GRANT ALL PRIVILEGES ON samast.* TO 'vijay'@'%';
+
+GRANT ALL PRIVILEGES ON *.* TO 'adarsh'@'14.99.243.138'             
+GRANT SELECT, INSERT, UPDATE ON `epm`.* TO 'adarsh'@'14.99.243.138';
+
+GRANT ALL PRIVILEGES ON hawa_new.* TO 'abhishek'@'14.99.243.138';
+GRANT ALL PRIVILEGES ON spfs.* TO 'abhishek'@'14.99.243.138';
+GRANT SELECT,INSERT,UPDATE,ALTER ON spfs.* TO 'abhishek'@'14.99.243.138';
+SHOW GRANTS FOR 'dipu'@'14.99.243.138';
+
+flush privileges;
+
+hawa_new
+spfs
+
+50hzauth
+epm
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>>>
+
+
+samast-prod-
+mysql/mongo 192.168.101.19
+
+
+-------------------------------------
+
+SELECT user FROM mysql.user;
+delete from mysql.user where user='satyajit';
+delete from mysql.user where user='adarsh';
+
+
+GRANT SELECT ON oms_db_prod_latest.* TO 'abhishek'@'14.99.243.138';
+SHOW GRANTS FOR 'abhishek'@'14.99.243.138';
+REVOKE ALTER ON sunny FROM 'samast'@'14.99.243.138';
+REVOKE ALL PRIVILEGES ON samast.* FROM 'vijay'@'';
+
+flush privileges;
+GRANT ALL PRIVILEGES ON he.* TO 'adarsh'@'14.99.243.138';
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+CREATE USER 'chetan'@'%' identified by 'Chetan@1212' PASSWORD EXPIRE PASSWORD EXPIRE INTERVAL 1 DAY; 
+
+
+
+
+
+
+
+
+
+
+SELECT user FROM mysql.user;
+
+CREATE USER 'jawahar'@'%' IDENTIFIED BY 'Jawahar@1212';
+GRANT SELECT ON samast.* TO 'dipu'@'%';
+flush privileges;
+SHOW GRANTS FOR 'jawahar'@'14.99.243.138';
+SHOW GRANTS FOR 'jawahar'@'%';
+drop user 'jawahar2'@'14.99.243.138';
+
+
+----> For Procedure Access
+
+CREATE USER 'vijay'@'%' IDENTIFIED BY 'Vijay@1212';
+
+GRANT SELECT,INSERT,UPDATE ON samast.* TO 'vijay'@'%';
+
+
+epm
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, EXECUTE ON samast.* TO 'satyajit1'@'10.212.134.50';
+flush privileges;
+SHOW GRANTS FOR 'adarsh'@'118.185.255.98';
+
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER, CREATE TABLESPACE ON epm.* TO 'adarsh'@'14.99.243.138';
+
+
+
+
+GRANT SELECT, INSERT, UPDATE, CREATE, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER, CREATE TABLESPACE ON epm.* TO 'mohit'@'118.185.255.98';
+
+
+GRANT SELECT, INSERT, UPDATE, CREATE, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER, CREATE TABLESPACE ON hea.* TO 'adarsh'@'14.99.243.138';
+
+GRANT SELECT,INSERT,UPDATE,ALTER,EXECUTE,DELETE ON hea.* TO 'adarsh'@'14.99.243.138';
+GRANT SELECT,INSERT,UPDATE,ALTER,EXECUTE,DELETE ON hea.* TO 'adarsh'@'118.185.255.98';
+GRANT SELECT,INSERT,UPDATE,ALTER,EXECUTE,DELETE ON hea.* TO 'adarsh'@'182.76.9.122';
+GRANT SELECT,INSERT,UPDATE,ALTER,EXECUTE,DELETE ON hea.* TO 'adarsh'@'192.168.51.110';
+
+
+SHOW GRANTS FOR 'adarsh'@'14.99.243.138';
+
+SHOW GRANTS FOR 'mohit'@'118.185.255.98';
+
+SHOW GRANTS FOR 'ravindra'@'182.76.9.122';
+
+GRANT ALL PRIVILEGES ON samast.* TO 'adarsh'@'118.185.255.98';
+
+SHOW GRANTS FOR 'vikram'@'172.16.4.97';
+
+
+
+
+
+--------------------------------------Public IPs---------------------------------------------------------------------------------------------------------------------------------
+
+
+| Grants for mohit@118.185.255.98                                     |
++---------------------------------------------------------------------+
+| Grants for mohit@192.168.51.110                                     |
++---------------------------------------------------------------------+
++--------------------------------------------------------------------+
+| Grants for mohit@14.99.243.138                                     |
++--------------------------------------------------------------------+
++-------------------------------------------------------------------+
+| Grants for mohit@182.76.9.122                                     |
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE USER 'dipu'@'%' IDENTIFIED BY 'Dipu@1212';
+GRANT SELECT ON samast.* TO ''dipu'@'%';
+CREATE USER 'vikas'@'%' IDENTIFIED BY 'Vikas@1212';
+GRANT SELECT,INSERT,UPDATE ON samast.* TO 'vikas'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE ON `hea`.* TO 'adarsh'@'182.76.9.122'
+delete from mysql.user where user='adarsh';
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, EXECUTE ON `hea`.* TO 'adarsh'@'182.76.9.122'
+drop user 'jawahar2'@'14.99.243.138';
+SELECT user FROM mysql.user;
+-------------------------------------------------------------samast-qa---------------------------------------------------------------------------------------------------------
+CREATE USER 'dipu'@'%' IDENTIFIED BY 'Dipu@1212';
+GRANT SELECT,INSERT,UPDATE,ALTER ON samast.* TO 'dipu'@'%';
+flush privileges;
+SHOW GRANTS FOR 'dipu'@'118.185.255.98';
+delete from mysql.user where user='vijay';
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, EXECUTE ON `hea`.* TO 'adarsh'@'182.76.9.122'
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE USER 'adarsh1'@'118.185.255.98' IDENTIFIED BY 'Adarsh@1212';
+GRANT SELECT,INSERT,UPDATE,ALTER ON samast.* TO 'adarsh1'@'118.185.255.98';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, EXECUTE ON samast.* TO 'adarsh1'@'118.185.255.98';
+flush privileges;
+SHOW GRANTS FOR 'dipu'@'14.99.243.138';
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE USER 'adarsh1'@'182.76.9.122' IDENTIFIED BY 'Adarsh@1212';
+GRANT SELECT,INSERT,UPDATE,ALTER ON epm.* TO 'adarsh1'@'182.76.9.122';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, EXECUTE ON 50hzauth.* TO 'adarsh'@'%';
+flush privileges;
+SHOW GRANTS FOR 'dipu'@'182.76.9.122';
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE USER 'vijay'@'10.212.134.55' IDENTIFIED BY 'Vijay@1212';
+GRANT SELECT ON samast.* TO 'deepu'@'10.212.134.50';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, EXECUTE ON 50hzauth.* TO 'adarsh'@'14.99.243.138';
+flush privileges;
+SHOW GRANTS FOR 'vijay'@'10.212.134.55';
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SELECT * FROM mysql.user where user = '%abhishek%' \G
+delete from mysql.user where user='adarsh';
+select user from mysql.user where user = 'satyajit1';
+
+
+GRANT ALL PRIVILEGES ON samast.* TO 'vijay'@'182.76.9.122';
+
+
+select count(*) from eden where  conitio between '2023-08-29' and '2023-08-31';
+
+
+SELECT * FROM mysql.user where user = '%abhishek%' \G  
+
+
+
+CREATE USER 'adarsh'@'%' IDENTIFIED BY 'Adarsh@1212';
+GRANT SELECT   ON *.* TO 'manas'@'%';
+flush privileges;
+
+alias opc-ua='rdesktop 52.66.223.251 -g 1300*600'
+
+
+GRANT   ALL PRIVILEGES ON *.* TO 'surya'@'%';
+flush privileges;
+
+CREATE USER 'satyajit1'@'%' IDENTIFIED BY 'Satyajit@@1212';
+
+
+CREATE USER 'adarsh'@'%' IDENTIFIED BY 'Adarsh@1212';
+GRANT ALL PRIVILEGES ON *.* TO 'adarsh'@'%';
+flush privileges;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,446 @@
+---------------------------------------------------------------------Point-To-Remember-----------------------------------------------------------------------------------------
+
+1- share data in my /home partitaions and bkp data in my / partitation.
+2- if databse connection is not happening in SAMAST-Prod may be the vpn is not connected properly.
+3- if data is not updating in ftp dashboard in re50hertz then go to portainer >> RE-AWS >> Service > spfs-ftp-poc
+4- when Re-50hertz is not working restart spfs-prod-test
+4- if you want to send monitoring of disk issue of any db serevr then go to that server and cronatb -l and open tablesize script then download it and attach these mysql or monogodb Table size with screenshot of Df -Th.
++++
+ crontab -l
+ vim /root/script/table_details.sh
+ ls -lrth /var/lib/mysql-files/csv/
+ cp /var/lib/mysql-files/csv/202302090900-ForecastDetails.csv /tmp/
+ cp /var/lib/mysql-files/csv/202302090900-Hea.csv /tmp/
+ vim /var/lib/mysql-files/csv/dbsize09-02-2023-09
+ vim "/var/lib/mysql-files/csv/dbsize09-02-2023-09:00:01.csv"
+ cp "/var/lib/mysql-files/csv/dbsize09-02-2023-09:00:01.csv" /tmp/
+ cd /tmp/
+5- if someone internet is not working reconnect lan cable and restart.
+6- to access share in windows \\172.16.1.158 in run bar
+7- after making build confirm the changes then only pull or deploy.
+8- always run the command to fetch the data from topic inside kafka live.
+9- restart sch 4 on qa 
+10- configuration of OPC DA or UA server the system should have minimum of 4GB RAM, 2 core cpu and around 200 GB of hard disk with windows server operating system installed. 
+11- CTRL + ALT + SHIFT + R to start the screen recorder and CTRL + ALT + SHIFT + S to stop and video saved in /home/videos.
+12- if you installed vpn and it is not connecting then we have to restart the system then delete previous configuration and reconfigure vpn .
+13- when someone place parser-config file in EPM-Prod brfore build give 654 permission after place the file in conf dir in EPM .
+14- in EPM Prod we can compare the back-up data with processd file data and if bkp have that file then you can delete the data.
+
+cd /EPMDATA/Weather/Weather-Backup/IMD_ALL_INDIA/processed  ---> compare with cd $EPM_HOME/files/weather/IMD_ALL_INDIA/processed ----> and delete the availble file in bkp from $EPMHOME
+
+- you can also delete file in input bcoz they are not processed file you can delete some above files.
+
+15- you are not able to login any e2e the may be the ssh port will be change bcoz of sftp
+[root@50-hertz066 ~]# ssh root@101.53.155.78 -p 8924
+16- if you are deleting ms or ser file and you are not finding the ms or ser file then you can ask qa team for object id of that pss then search with this and delete.
+----------------------------------------------- 
+ {
+
+    "_id" : ObjectId("60adeb46a9ddc418c84ae67d"),
+
+    "pooling_station" : {
+
+        "uuid" : "605d88c8b4fa96254b2b08cb",<<<<----------------------this is the id
+
+        "name" : "Ralla"
+
+    },
+
+ ----------------------------------
+
+
+
+
+ cd /Kafka-Data/kafka-live/
+  ls
+   cd ..
+  cd Sync-History/
+  ls -lrth 605d88c8b4fa96254b2b08cb-Ralla-0.ser
+  rm -rf 605d88c8b4fa96254b2b08cb-Ralla-0.ser
+
+
+
+16- i was not able to login epm bcoz i login already using arpit id. so fist i logout from arpit id from https://auth.50hertz.in then again login back to epm site.
+
+20 - always follow the steps of deployment 
+
+21- to copy bihar sftp folder file in you local first go to ftp server and copy that file in mnt then from where copy in your local and then mail to the user.
+
+22- bitbucket ka payment har 7 ko hota hai.
+
+23- all the script in crontab in ftp server are pulling data on our ftp server but some sites like charanka renew the data is pulling through kafaka
+
+24- data is not coming in ftp server from past a day ago so arpit delete ms file and restart the api then job restarted successfully after that data is coming.
+
+25- if data is not coming our ftp server of any pss which is we are pulling the data then we should run the script manually in ftp server from crontab -l.
+26- hold ctrl + scroll down text to paste same text in below column in excel.
+27- when data is not coming on EPM UI restart the SCH4 on docker 2(228).
+28- how to access to any server with specific port number. suppose you want to access that server on port number 33
+ssh root@172.16.1.141 -p 33
+29- before mail configuration check user name and password in (https://mx1.50hertz.in:2096/) web mail. 
+
+30- to give log access to any user add ssh key in user user and give rx permission using setfacl in that server(for user in  epm)
+
+
+31- if you want give to access t both database hawa and spfs so in db-perm give * at the place of database.
+32- Property files backup for prod in mnt location for ftp server
+33- if you find this type of massage from user end
+
+--> Please make a directory(Schedule/Test) on ftp server for testing purpose with write permission.
+
+make directory in ftp server inside /home/wind/mkdir -p Schedule/Test
+
+give user user and kafkadw user to write permission on last folder
+
+and full permission also not Schdule only full permission to Test inside Schdule.
+
+34- to search ser file 
+
+ls -lrth *-Tejuvall-*.se
+35- While giving prodedure access give EXCUTE access
+
+36- The error in backup server of input output error 
+
+" reason is It appears that the issue was caused by some type of corruption on the filesystem that caused it became unresponsive. Run file system check and repair the filesystem corruption."
+
+"Looks like either  hardware error or filesystem corruption"
+
+"
+
+37- if jenkins UI showing 404 error on browser then follow the below steps
+ Note: you should have to change the port number. like here we do from 8080 to 8088
+
+ ps -ef | grep jenkins
+ kill -9 905
+ ps -ef | grep jenkins
+ kill -9 938 939
+ ps -ef | grep jenkins
+ nohup /usr/java/jdk-11.0.15/bin/java -Djava.awt.headless=true -DJENKINS_HOME=/var/lib/jenkins -jar /usr/lib/jenkins/jenkins.war --logfile=/var/log/jenkins/jenkins.log --       webroot=/var/cache/jenkins/war --httpPort=8088 --debug=9&
+ ps -ef | grep jenkins
+ firewall-cmd --zone=public --add-port=8088/tcp --permanent
+ firewall-cmd --reload
+ netstat -tunlp | grep 8088
+ ps -ef | grep 2406
+ ps -ef | grep jenkins
+
+ After that go to browser and paste IP:8080 then your jenkins dashboard will shows up and running.
+
+38 - tomcat diffrent distro link to download
+
+https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.51/bin/
+
+
+
+39- Epm parser deployment on epm production here some few point
+
+- you can also deploy running jar from 177(qa) to epm-prod(SCH wise it could be diff server) in lib dir then stop SCH and Deploy new rename from both place jar and script and run the script and check.
+
+- deploy according to SCH 
+
+- rename jar with present date day and also modify the date inside script like: for 
+
+deployment for weather SCH ----> $EPM_HOME/lib/EPM-parser-1.12-SNAPSHOT_30052023.jar
+
+and inside script ---> cd /home/www_epm/prod/bin --> vim EPM-weather-engine.sh --> chnge date like this 
+
+ echo $DATE $PN not working. 
+                nohup /var/lib/java/jdk1.8.0_211/bin/java -DAsyncLogger.ThreadNameStrategy=UNCACHED $SE_MO -DPROCESSNAME=$PN -DEPM_HOME=$EPM_HOME -Dcom.sel.product=epm -Dspring.batch.job.enabled=false -Dorg.quartz.scheduler.instanceName=$PN -XX:+HeapDumpOnOutOfMemoryError -jar  $EPM_HOME/lib/EPM-parser-1.12-SNAPSHOT_30052023.jar >> $EPM_HOME/logs/epm-process-$PN-run.log 2>&1 &
+ curl -w -F "https://sms.gngsms.com/api/sendhttp.php?$credential&mobiles=$mobile&message=EPM PROD $PN service restarted&sender=MNIKRN&route=4&country=91"
+sleep 2
+else
+
+40- if gamesha swarm is down
+
+- check on gamesha server docker service status ( systemctl status docker)
+
+- if not active then  systemctl restart docker 
+
+41- if dev server is down
+
+and if you start the server swarm will bw down bcoz of firewall is automatically open.
+
+42- if someone want to access arch from operation 
+
+cd /home/wind/arch/scada_2020/wind/SOLAR/
+
+43: TO check punjab live data is coming or not
+
+go to ftp server
+
+cd /home/wind/SOLAR/PB
+
+44- During SSL Update in Epm production 
+
+we add two files 
+
+50hertz.cer
+50hertz.key
+
+note: check in all conf files the the both file with same name
+
+issue: in my case nginx service is failing aftre update ssl coz in alert conf file there is .cert so i cahnge it to .cer then restart the service.
+
+45- Today vijay system is automatically restart and when press enter it goes blank and again start and gren screen is running .
+
+solution: clean the dust of cpu ,re insert the ram after cleaning then restart the system.
+
+46- if devloper comes and said make a build with new branch the go to the project and there is a option " scan multibranch pipleline now" run that after that new branch will show.
+
+47- to start the Rserve
+    R CMD Rserve --RS-enable-remote
+    R CMD Rserve --RS-enable-remote&
+
+48- abhhishek system password is 123
+
+49- in weather data type ECM10 is ECMWF.
+
+50-  to give access on archive on operation team
+
+ setfacl -R -m u:kafka:rx /home/wind/arch/scada_2020/wind/SOLAR/MP/
+ cd /home/wind/arch/scada_2020/wind/SOLAR/MP/SIMCOM
+ cd /home/wind/arch/scada_2020/wind/SOLAR/MP/
+  ls
+ cd Simcon/
+ setfacl -R -m u:kafka:rx /home/wind/arch/scada_2020/wind/SOLAR/MP/Simcon/
+ getfacl /home/wind/arch/scada_2020/wind/SOLAR/MP/
+
+
+51-whenever you export SOLAR data first rename the current folder at  /home/wind/SOLAR/DATA/CURRENT/OUTGOING/export/exportData/ of exportData01072023 and create new dir with same name exportData
+
+52- when OPC data is not coming in DB and you are going to create new table and rename table first you need to stop that data logger then rename or alter the table .
+
+53: ----------------------------------------------------------------------To block USB device in linux ----------------------------------------------------------------------
+
+step1- cd /etc/modprobe.d/
+
+step2- vim usb-storage.conf
+
+
+step3- install usb-storage /bin/true -- add this line.
+
+
+
+step 4- restart the system.
+
+
+step 5- plugin the USB device and verify.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------To take dump from 3.6.48.236 to 65.1.19.50--------------------------------------------------------------------
+1- 
+[ec2-user@ip-172-31-24-252 ~]$ 
+make user root with 172.31.22.180 which is private ip of main db.
+CREATE USER 'root'@'172.31.22.180' IDENTIFIED BY 'Admin@1212';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'172.31.22.180';
+
+
+2- now take dump in scada db also provide private ip while taking dump ( mysqldump -uroot -p Admin@1212 -h 172.31.24.252 spfs > gzip abc.sql.gz )
+
+3- also change the path according to script modification
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+54- when pooja or mayank mail for create path for kafkadw user access.
+
+
+
+ 1294  cd SOLAR/KA/
+ 1295  ls -lrth
+ 1296  mkdir KUDL-HYB
+ 1297  ls
+ 1298  cd KUDL-HYB/
+ 1299  pwd
+ 1300  setfacl -R -m u:kafkadw:rwx /home/wind/SOLAR/KA/KUDL-HYB/
+ 1301  cd ..
+ 1302  getfal KUDL-HYB/
+ 1303  getfacl KUDL-HYB/
+ 1304  cd ..
+ 1305  getfacl KA/
+ 1306  cd /home/wind
+ 1307  cd /SOLAR/MP/BIN-GREEN/
+ 1308  cd SOLAR/MP/BIN-GREEN/
+ 1309  cd SOLAR/MP/
+ 1310  ls
+ 1311  mkdir BIN-GREEN/
+ 1312  cd BIN-GREEN/
+ 1313  pwd
+ 1314  setfacl -R -m u:kafkadw:rwx /home/wind/SOLAR/MP/BIN-GREEN
+
+
+55-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+To modify user
+
+usermod -l newuser olduser
+
+usermod -l sikhwala Sikhwala
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+56-
+to whitelist public ip on wind 21 server 
+
+1- go to ftp server
+2- go to /home/PROPERTIES_FILES/WIND/
+3- vim login.properties
+4- add the public ip
+--------------------------------------------
+57-
+To Remove FTP server disk on this location
+
+/home/wind/Archive/ArchiveS3/
+
+-58-------------------------------------
+
+# Deploy opc jar in ftp  Production which is running for OPC UA
+
+- go to ci jenkins
+
+- re-odbc client > master and build
+
+
+- download the jar and rename it to opc-batch.jar
+
+- go to ftp server take bkp of previous jar and paste new .
+
+
+
+------------------------------------------------------------------------------------------------------------------
+59-
+1- before adding new device in Observioum it is reqiure the service of snmpd is running on all node.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+60- if from portal of wind 21 mail is not triggering . so restart the schdule batch from production RE-swarm.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+61- when qa swarm is down or load is increasing
+
+run below command on all the swarm cluster node.
+
+ service iptables restart
+ service docker restart
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+62- Before removing container first stop the conatiner then remove
+
+docker stop < conatiner id>
+docker rm < container id>
+
+------------------------------------------------
+63- grfana default password and username
+
+admin
+password
+
+64
+
+if CRM not working
+
+go to production portainer and restart the crm-master service .
+
+65-
+
+for gheleda site
+
+if data is coming in bad qulity
+
+- close kepex on client side and start again
+
+- wait for 10-15 min it will refelect.
+
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2578 @@
+1- when tester of operation team calling and say data is not coming from this PSS.
+solution - delete the ms file in prod of that particular PSS.
+
+2- install and configure java ( for adarsh)
+
+   download java in opt 
+   set path in vim /etc/profile
+
+   ln -s /opt/jdk1.8.0_211/bin/java /usr/bin/java
+   ln -s /opt/jdk1.8.0_211/bin/java /etc/alternatives/java
+   vim /etc/profile
+   export JAVA_HOME=/opt/jdk1.8.0_211
+   export PATH=$PATH:$JAVA_HOME
+   source /etc/profile
+   java -version
+
+Note: when openjdk already install in someone system
+46  java -version
+   47  rm -rf /usr/bin/java
+   48  rm -rf /etc/alternatives/java
+   49  cd /home/vijay/
+   50  tar -xzf jdk-8u211-linux-x64.tar.gz 
+   51  mv jdk1.8.0_211/ /opt/
+   52  cd /opt/
+   53  ln -s /opt/jdk1.8.0_211/bin/java /usr/bin/java
+   54  ln -s /opt/jdk1.8.0_211/bin/java /etc/alternatives/java
+
+
+
+
+
+2- maven
+  download maven in opt
+
+  tar -xvzf apache-maven-3.5.4-bin.tar.gz 
+  mv apache-maven-3.5.4 apache-maven
+  vim /etc/profile.d/maven.sh
+export M2_HOME=/opt/apache-maven
+export PATH=${M2_HOME}/bin:${PATH}
+
+  chmod +x /etc/profile.d/maven.sh
+  source /etc/profile.d/maven.sh
+  mvn --version
+
+
+
+
+
+
+
+                                          
+   
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3- make env ( NVKN HOME and PROD HOME for user )
+
+make dir
+give  full permission and ownership to that dir
+
+do entry in vim /etc/profile given below.
+
+export EPM_HOME=/home/abhishek/DEV
+export PATH=$PATH:$EPM_HOME
+export PROD_HOME=/home/abhishek/DEV
+export PATH=$PATH:$PROD_HOME
+export NVKN_HOME=/home/abhishek/DEV
+export PATH=$PATH:$NVKN_HOME
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4- Take dump and restore to another local user ( like from adarsh to abhishek)
+
+- first go to mysql shell of that user and check that databaseis exist for which you are going to take dump.
+
+# mysql -uroot -p
+
+- take dump of that db if it is exist.
+
+# mysqldump -u root -pAdmin@1212 50hzauth | gzip > 50hzauth_20012023.sql.gz
+
+
+- copy to another user folder user home directory.
+
+# scp -r 50hzauth_20012023.sql.gz root@172.16.1.137:/home/abhishek/
+
+- Now go to Abhishek system and unzip the dump in /home/abhishek
+
+# gunzip 50hzauth_20012023.sql.gz 
+
+- go to mysql shell of abhishek user and check That DB is exist with name if not then create the DB.
+
+# create database 50hzauth; --> now come out from mysql shell
+
+# mysql -uroot -pAdmin@1212 50hzauth < 50hzauth_20012023.sql
+
+- again go back to mysql shell and confirm the DB is restore or not.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5- Make FTP User and Password ( in prod 15.207.32.135) ( in qa 205.147.98.133 )
+
+
+Dear sir,
+
+ 
+
+Kindly provide the FTP path & credentials as per the below details.
+
+ 
+
+1.       PSS- Sherisha
+
+FTP Path- ftp://wind21.50hertz.in/SOALR/CG/Sheri
+
+ 
+
+2.       PSS- Pargi
+
+FTP Path- ftp://wind21.50hertz.in/SOALR/TS/Pargi_Glob
+
+---------------------------------------------------------------> like this
+
+
+
+
+Solution:
+
+
+- make ftp path and credential for SOLAR Pargi_Glob and Sheri for user pargi and sherisha
+
+location is /home/wind/SOLAR/TS/Pargi_Glob
+            /home/wind/SOLAR/CG/Sheri
+
+Step -1 
+
+
+-for Pargi_Glob
+
+ cd /home/wind/SOLAR/
+ ls -lrth
+ cd TS/
+ ls -lrth
+ mkdir Pargi_Glob
+ chmod -R 770 Pargi_Glob
+ setfacl -R -m u:anadel:rx Pargi_Glob/
+ setfacl -R -m u:mpl:rx Pargi_Glob/
+ setfacl -R -m u:operation:rx Pargi_Glob/
+ setfacl -R -m u:kafka:rx Pargi_Glob/
+ useradd pargi -s /sbin/nologin 
+ passwd pargi ----> for simple password only use alphanumeric password not include special charcter( use simple password genrator from browser with 12 length).
+ setfacl -m u:pargi:rx  /home/wind/
+ setfacl -m u:pargi:rx  /home/wind/SOLAR/
+ setfacl -m u:pargi:rx  /home/wind/SOLAR/TS/
+ setfacl -R -m u:pargi:rwx  /home/wind/SOLAR/TS/Pargi_Glob/
+
+- for Sheri
+
+ cd /home/wind/SOLAR/
+ cd CG
+ ls -lrth
+ mkdir -p CG/Sheri
+ chmod -R 770 CG/Sheri
+ setfacl -R -m u:anadel:rx CG/Sheri
+ setfacl -R -m u:mpl:rx CG/Sheri
+ setfacl -R -m u:operation:rx CG/Sheri
+ setfacl -R -m u:kafka:rx CG/Sheri
+ useradd sherisha -s /sbin/nologin/
+ passwd sherisha   ----> for simple password only use alphanumeric password not include special charcter( use simple password genrator from browser with 12 length)
+ setfacl -m u:sherisha:rx /home/wind
+ setfacl -m u:sherisha:rx /home/wind/SOLAR/
+ setfacl -m u:sherisha:rx /home/wind/SOLAR/CG/
+ setfacl -R -m u:sherisha:rwx /home/wind/SOLAR/CG/Sheri/
+
+
+Step -2
+
+modify the cronscript according to your ftp path and user.
+
+# crontab -l
+ #vim /home/script/archive-sync/FTP-Sync-Archive.sh  -> goto this file and go SOLAR PSS Section at line number 77. then select the path(/home/script/archive-sync/solar-sync.txt)
+ 
+ #vim /home/script/archive-sync/solar-sync.txt --> and enter the path details of ftp in alphabetical order.
+
+TS/BELLAMPALLI/BELLA_SCCL
+TS/KMPALLY/SKY_KMP
+TS/Pargi_Glob               <<--------------- like this 
+TN/KANARPATTI/KANAR_CLEAN
+TN/ERICHANATHAM/ERIC_GIRI
+TN/GRT_TUTICORIN
+TN/JSW_TUTICORIN
+TN/PERIYAPATTI-CONT
+UP/BAHRAICH/GREE_BAHR
+
+D/D1/GREENKO_SCADA/AP/Gani-PSS2/Gani09Mihir
+D/D1/GREENKO_SCADA/AP/Gani-PSS2/Gani10Enerstar
+CG/Sheri     <<<----------------------------------like this
+AP/NARA_S
+AP/MAHI_JAM/GRTJ
+AP/MAHI_JAM/BrightSolar
+
+
+
+
+-- Now Open This Script file
+
+#  vim /home/script/archive-sync/solar-arch.sh --> and select the given path at line number 10 ( /home/script/archive-sync/solar-arch.txt ).
+       
+#  vim /home/script/archive-sync/solar-arch.txt --> inside the file carefully fill the path with press only one TAB not space.
+
+D/D1/GREENKO_SCADA/AP/Gani-PSS2/Gani09Mihir     Gani-PSS2       SOLAR
+D/D1/GREENKO_SCADA/AP/Gani-PSS2/Gani10Enerstar  Gani-PSS2       SOLAR
+CG/Sheri        Sheri   SOLAR  <<< ------------------------------------------ like this
+AP/NARA_S       Peravali-NSGPL  SOLAR
+AP/MAHI_JAM/GRTJ        Jammalabanda-GRT        SOLAR
+AP/MAHI_JAM/BrightSolar Jammalabanda-BREPL      SOLAR
+ 
+
+TS/BELLAMPALLI/BELLA_SCCL Bellampally   SOLAR
+TS/KMPALLY/SKY_KMP   adani              SOLAR
+TS/Pargi_Glob           pargi           SOLAR      <<<<<------------------- like this Press only one Tab.
+TN/KANARPATTI/KANAR_CLEAN       Kanarpatti      SOLAR
+TN/ERICHANATHAM/ERIC_GIRI       Erichanatham    SOLAR
+TN/GRT_TUTICORIN        Tuticorin       SOLAR
+
+
+------------------------------------------------------------------>>> FOR WIND 
+
+
+ 
+ vim /home/script/archive-sync/FTP-Sync-Archive.sh
+ vim /home/script/archive-sync/wind-sync1.txt <<-- this file used for push the data and synch2.txt for pull the data.
+ vim /home/script/archive-sync/WIND-arch1.sh  <<-- 
+ vim /home/script/archive-sync/wind-archtest.txt
+ ls /home/wind/arch/scada_2020/wind/WIND/  <<<--- inside this arch data is stored on this location.
+
+
+Step -3 make entry in FTP-Document sheet
+
+
+
+
+
+
+
+go to data > server info >  FTP document > WIND-SOLAR FTP document > there you can choose WIND or SOLAR according to your need.
+
+Note : before entring details first check in file zilla the path and password is correct or not.
+
+--->like now we choose SOLAR
+
+- always fill the field with blue color bcoz blue color inidicate fresh or newly created path.
+
+- enter in alphabitcaly order
+
+- for pargi 
+
+B          C                  E               F      G        H            I           J    K                        
+
+
+TS	TS/Pargi_Glob    pargi		      .     scada   Push	    empty       .    ftp.50hertz.in
+
+
+---> after also fill the user name at Row number one and wrrite the user permision at 381 at column number GH ( like pargi).
+
+
+---> After That enter user and password details in FTP push password list (wind/solar).
+
+
+Step -4. mail the password only mayank and harsh
+
+        and reply all after hide the password( means at the password ***** like this fill in email body).
+
+
+
+-----------------------------------------------------------********************-------------------------------------------------------------------------------------------------
+
+6-####### SFTP- Made A SFTP for yatharth on QA ( wind3).
+
+
+ cd /home/
+ ls
+ mkdir TEST
+ cd TEST/
+ mkdir test
+ cd test
+ pwd
+ useradd -s /sbin/nologin yatharth
+ chmod 750 /home/TEST/test/
+ passwd yatharth
+ vim /etc/ssh/sshd_config  --> add below lines in that conf file at the end of file.
+
+-------------------------------
+
+comment the #Subsystem      sftp    /usr/libexec/openssh/sftp-server
+
+
+Subsystem     sftp   internal-sftp
+Match User yatharth
+Match Group sftpuser
+ForceCommand internal-sftp
+PasswordAuthentication yes
+ChrootDirectory /home/TEST/
+AllowAgentForwarding no
+AllowTcpForwarding no
+X11Forwarding no
+----------------------------
+
+ service sshd restart
+ pwd
+ cd ..
+ ls -lrth
+ chown yatharth:yatharth test
+ passwd yatharth
+
+------> send the user name and password to user on mail
+
+NOTE: Whenever you modify The sshd_conf file restart the sshd service.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+7- Jenkins -
+
+1- for QA-HAWA
+
+- run build if build is success then go to wind 3 and check tomcat is running or not . if not then start the tomcat and run wind3 page in browser 
+
+2- for solar ui
+
+- make a build if build is success
+
+- pull the image from portainer from gamesha > service > re50hertz
+
+- run restaging in browser.
+
+3- for EPM
+
+
+EPM-UI
+
+- make build if build is success
+
+- pull the image from QA > service > epm-master-bleeding -edge.
+
+
+EPM-Parser
+
+- Run build
+
+- if success download parser and copy to 42 in mnt folder
+
+- go to 42 and type parser_depoly
+----------------------------------------->>> To Restart The Epm Parser on qa for sch1 it is on 42 and weather sch on 177
+
+--> to restart parser
+- ps aux | grep parser
+- kill -9 <pid>
+
+
+
+
+
+
+
+
+4- Spfs schdule.
+
+- make a build if build is success
+
+- go to wind 3 and check spfs-schduler is running or not
+
+cd /HOME/DEPLOY/SOLAR/CURRENT/
+
+ps aux | grep Jar
+
+if not
+
+nohup java -jar SPFS-Schduler-1.jar &
+
+again check it is running or not 
+
+ps aux | grep Jar
+
+
+NOTE: To Stop SPFS-Schduler-1
+
+go to cd /HOME/DEPLOY/SOLAR/CURRENT/
+
+ps aux | grep Jar
+
+kill -9 <pid>
+
+ps aux | grep Jar ---> confirm it is stopped or not.
+
+
+-----------------------------------------------------------------Deploy Epm-parser on SAMAST-QA(237).---------------------------------------------------------------------------
+
+
+- make a build of epm-feature-bleeding-edge
+- if successed the download the parser jar from location : feature-bleeding-edge > #60(build-number) > workspace > /var/lib/jenkins/... > EPM > Epm-Parser > target > download the latest jar of epm-parser.
+
+- copy this jar to SAMAST-QA(237) in Mnt
+# scp -r parser.jar root@216.48.182.237:/mnt
+- go to SAMAST-QA(237) and go to $SAMAST_HOME/lib
+- take bkp of current jar in lib
+# mv parser.jar parser.jar_020012023
+
+- copy the jar from mnt to lib folder
+
+# cp /mnt/parser.jar .
+
+- go to bin and run the script to start the parser.
+
+# cd /bin
+
+sh samast-parser.sh
+
+- now check the jar and SCH is running or not
+
+# ps aux | grep jar
+# p aux | grep SCH
+
+----------------------------------------------------------------------EPM Parser deploy on qa---------------------------------------------------------------------------
+9 ---login 237
+ mv EPM-parser-1.12-SNAPSHOT.jar EPM-parser-1.12-SNAPSHOT.jar_040220231250
+ ps aux | grep SCH
+ kill -9 24268
+---copy from your local to mnt
+ scp -r EPM-parser-1.12-SNAPSHOT.jar root@216.48.182.237:/mnt
+ cd /mnt
+ ls -lrth
+ mv EPM-parser-1.12-SNAPSHOT.jar EPM-parser-1.12-SNAPSHOT.jar_040220231250
+ ps aux | grep SCH
+ kill -9 24268
+ cd $SAMAST_HOME/
+ cd lib/
+ ls -lrth
+ mv EPM-parser-1.12-SNAPSHOT.jar EPM-parser-1.12-SNAPSHOT.jar_040220231252
+ ps aux | grep SCH
+ cp /mnt/EPM-parser-1.12-SNAPSHOT.jar .
+ ls -lrth
+ ps aux | grep SCH
+ cd ..
+ cd bin/
+ ls -lrth
+ sh samast-parser.sh 
+ ps aux | grep SCH
+
+
+--------------------------------------------------------------------------
++ Deply EPM-parser On SAMAST-Prod.
+
+The Same Process We Will apply For Production
+
+go to ssh 50hzdevops@192.168.200.17
+
+and Repeat The Same Process To Deploy parser on Samast-Prod.+++++
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+10 - Please create and deploy a build of re-opc-consumer regarding the integration of bhatel pss.
+
+- it can be qa or production to deploy so better to ask the devloper
+- make a build 
+- when build is success then copy the image tag name 
+- go to portainer for qa go to qa or for production go to nvkn-prod then replace the tag with that container image and apply changes.
+- example: 50hertz/energy:opc-listener-PR-4 --> 50hertz/energy:opc-listener
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+11- 
+
+++++mongo dump and Restore
+
+- for dump particular DB
+mongodump --host 192.168.101.23 --port 27017 --db samast --username root --password Admin@1212 --authenticationDatabase admin --gzip --archive=/home/50hzdevops/DBBACKUP-DATA/samast04_02_2023.gz
+
+mongodump --port 27017 -u "router" -p "Admin@1212" --authenticationDatabase "admin" --db nvkn --gzip --archive=/home/DATA/MONGO/nvkn_`date +"%m-%d-%y_%H%M"`.gz
+
+- for restore
+
+mongorestore --db nvkn --username router --password Admin@2121 --authenticationDatabase=admin --gzip --archive=/mnt/06-04-21.gz
+----------------------------------------------------------------------------------------------------------------------------------------
+- For Dump collection Of particular DB.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+12-# Kindly please provide me access of logs on PB-SAMAST API PROD Server
+
+
+useradd -s /sbin/nologin user
+sudo useradd -s /sbin/nologin user
+su - user
+ sudo su - user
+passwd user
+ sudo passwd user
+sudo su - user
+vim /etc/passwd
+sudo vim /etc/passwd
+sudo su - user
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+13- Restart jar  in Scada DB
+
+
+(a)- by script
+
+# jar -restart
+
+o/p:
+
+1
+2
+3- wind
+4- solar
+
+--> press 3 hit enter then write wind hit enter 
+
+---> repeat the same process for solar
+
+
+(b)
+
+go to scada server
+
+go to first wind path
+
+cd /home/DEPLOY/WIND/CURRENT/
+
+ps aux | grep 'java -jar'
+
+kill -9 22744 --> use the current pid
+
+
+rm -rf nohup.out
+
+
+nohup java -jar wind-power-prediction.jar &
+
+
+ps aux | grep 'java -jar'
+
+
+Now for Solar
+
+cd /home/DEPLOY/SOLAR/CURRENT/
+
+ps aux | grep 'java -jar'
+
+kill -9 22744 --> use the current pid
+
+nohup java -jar SPFS_Forecaster-1.jar &
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14-
+++++++To Solve Replication Error
+
+go to scada server mysql shell
+
+mysql -uroot -pAdmin@1212
+
+show slave status\G;
+stop slave;
+set global  SQL_SLAVE_SKIP_COUNTER=1; 
+start slave; 
+show slave status\G;
+
+-------NOTE: The ( set global  SQL_SLAVE_SKIP_COUNTER=1; ) meaning of this command is This statement skips the next N events from the source. This is useful for recovering from replication stops caused by a statement. This statement is valid only when the replication threads are not running.
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
++++++ Please make a build on QA for hawa_web . For ticket no. - RE50HERTZ-6011. And place these line in WIND scheduleconfig.properties.
+
+
+
+
+upload.to.sldc.isActive=false 
+
+- 
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15-
+++++ Changes in Property files on QA(Wind/Solar)
+
+## for wind
+go to wind 3 for wind now chnge in scheduleconfig.properties.
+
+cd /home/PROPERTY-Files/WIND
+ls
+vim scadaconfig.properties
+
+example:
+#SEMS PROVISIONAL SCADA PROCESSING INFORMATION
+sems.provisional.sites.info=sems.Virvav-Continuum,sems.Virvav,sems.Tithwa(Betam),sems.Shikarpur(Vestas),sems.Suthari,sems.Vaghnagar,sems.Parabadi,sems.Tebhda,sems.Chandgarh,sems.Bhatel,sems.Batakurki,sems.Wandhiya,sems.Rabarika,sems.Koral,sems.Lohara,sems.Vejalpar,sems.Ukheda,sems.Jamde,sems.JamdeSolar,sems.Nandurbar,sems.Valve,sems.Ghatnandre,sems.Nigade,sems.Vankusavade,sems.Sada\ Waghapur,sems.RKB\ Ketu\ Kalan,sems.Ludarwa,sems.Gangapur,sems.Baori,sems.Bhimasamudra,sems.Tejuva(Mokala),sems.Kaladongar,sems.Borampalli,sems.Gandhvi,sems.Lamba,sems.Amarapur,sems.Ellutla,sems.Bhogat,sems.Aluru,sems.Veerbhadra(Renew),sems.pathikonda,sems.Ralla,sems.Lahori,sems.Madhopura,sems.Shedyal,sems.Hiwarwadi,sems.Shirala,sems.Vita\ Karve,sems.Sakri(Wind),sems.Kobalavadar,sems.Ankireddypalli,sems.Valsang,sems.Raipar,sems.Kalorana,sems.Vaspet,sems.BhesadaOther,sems.Amba,sems.Manza(Powerica),sems.Atit,sems.Kedgaon,sems.Morjar(Continuum),sems.Tarana
+
+
+
+-->----> add the text in previos text like sems.manza(powerica) and here you add sems.Tarana with , and paste the below whole text under the #SEMS PROVISIONAL SCADA PROCESSING INFORMATION.
+
+#SEMS SCADA SITES MAPPING TIME INTERVAL,CLIENT,METER,PARAMETER,SITE NAME
+-----------
+sems.Tarana=15,860181063667007,1,Phase active power (kt),Tarana   
+sems.url.Tarana=https://hea.50hertz.in/HEA_Webapp/rest/meterReadsRestService/getMeterReading/
+sems.historical.days.Tarana=2
+sems.Tarana.device=860181063667007
+sems.Tarana.meters=1
+sems.device.multiplier.Tarana=1000
+
+
+- After changes You dont need to restart any service but for solar you should restart SPFS-SCADA from portainer in RE-AWS-POC.
+
+
+## for solar
+
+cd /home/PROPERTY-Files/SOLAR
+
+vim scadaconfig.properties.
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+16-
+
+# Download Data From Kafka server for OPC DA Data Validation.
+
+- for kabrai 
+
+bin/kafka-console-consumer.sh --bootstrap-server 13.127.115.148:9092,13.232.194.131:9092,13.234.50.170:9092 --topic opc-data --from-beginning | grep "637f4a00291340562efc6e43" > kabrai-25-01-2023.csv
+
+bin/kafka-console-consumer.sh --bootstrap-server 13.127.115.148:9092,13.232.194.131:9092,13.234.50.170:9092 --topic opc-data --from-beginning | grep "MCR.Application.GVL.OG_MFM.KW" > kabrai-25-01-2023.csv
+
+bin/kafka-console-consumer.sh --bootstrap-server 13.127.115.148:9092,13.232.194.131:9092,13.234.50.170:9092 --topic opc-data --from-beginning | grep "kabrai" > kabrai-25-01-2023.csv
+
+- for bavli-GRT
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "ICR1.INVERTER.INV1" > Bavli-GRT11-01-2023.csv
+
+- for galivedu
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "638b1e20291340562efc6e61" > Galiveedu-11-01-2023.csv
+
+- for rewa
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "6389e410291340562efc6e5f" > Rewa-11-01-2023.csv
+
+- for Hari-GRT
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "ICR1.INVERTER.INV1" >   Harij-GRT-11-01-2023.csv
+
+- for Digsar-GRT
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "ICR1.INVERTER.INV1" >   Digsar-GRT-11-01-2023.csv
+
+- for for badsid-eden
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "PLC1..GURGAON" >   Badisid-11-01-2023.csv
+
+- for valkanana
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "SAB-001" >   ValkaNana-11-01-2023.csv
+
+
+- for manza
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "CB-08" >   Manza-11-01-2023.csv
+
+- for talari-2
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "ICR1_PM556_3..INV1" >   Talarichervu-11-01-2023.csv
+
+- for Gheleda
+
+bin/kafka-console-consumer.sh --bootstrap-server 172.31.27.113:9092,172.31.20.206:9092,172.31.20.195:9092 --topic opc-data --from-beginning | grep "GJ_PNX-003" >   Gheleda-11-01-2023.csv
+
+
+
+
+NOTE: change The Date And Time of csv File name According To the current Date. 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+17-
+# Error when connecting to mysql Work-Bench 
+
+MySQL Workbench SSL connection error: SSL is required but the server doesn't support it
+
+Go To Advanced > Timeout ( 60) > others > useSSL=0 > save > test-connection > may be the connection is succesfull.
+
+-----------------------------------------------------------------------KAFKA---------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+18-
+# kafka Connector Restart On QA NVKN.
+
+go to 22
+
+- ssh root@164.52.195.22
+- sudo su kafka
+- cd /home/kafka/kafka-live
+- ps aux | grep connect-stand
+- kill -9 < connect-stand-pid>
+- rm -rf /tmp/connect.offsets
+- ps aux | grep connect-stand ( if its stopped then run the below command)
+- nohup bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties>connect-nohup.out &
+
+--------------------------------------------------------------------------------------------------------------------------------------->
+-------------------------------------------------------------------kafka qa Deployment ---------------------------------------------------------------------------------------
+
+19-
+
+# Deploy Connector on QA
+
+- make a build on ci nvkn > re-processing-engine --> feature/bleeding edge. if success
+
+1- first Download The Kafka-connector-0.0.1-SNAPSHOT.jar in your local( middle jar only Download ).
+2- cd /home/surya/Downloads
+3- scp -r Kafka-connector-0.0.1-SNAPSHOT.jar root@164.52.195.22:/mnt
+4- ssh root@164.52.195.22
+5- cd /home/kafka/kafka-live/
+6- ps aux | grep connect-stand
+7- kill -9 < pid of connect-stand >
+8- rm -rf /tmp/connect.offsets
+9- cd libs
+10- cp Kafka-connector-0.0.1-SNAPSHOT.jar ../backup/Kafka-connector-0.0.1-SNAPSHOT.jar_27012023
+11- cd ..
+12- ls -lrth >> check the backup file is present.
+13- cd libs
+14- rm -rf Kafka-connector-0.0.1-SNAPSHOT.jar
+15- cp /mnt/Kafka-connector-0.0.1-SNAPSHOT.jar .
+16- ls -lrth
+17- cd ..  > cd /home/kafka/kafka-live/
+18- nohup bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties>connect-nohup.out &
+19- ps aux | grep connect-stand
+20- done and exit.
+---------------------------------------------------------------NVKN-connector Production deployment Real ----------------------------------------------------------------------
+148
+
+ cd /Kafka-Data/kafka-live/
+ ll /tmp
+ cd libs
+ ls -lrth
+ cp -r /Kafka-Data/kafka-live/libs/kafka-connector-0.0.1-SNAPSHOT.jar /Kafka-Data/kafka-connector_Backup/kafka-connector-0.0.1-SNAPSHOT_09082023.jar
+ cd ..
+ cd ..
+ cd kafka-connector_Backup/
+ ls -lrth
+ cd /Kafka-Data/kafka-live/
+ curl -X DELETE http://172.31.27.113:8083/connectors/live-scada-connector
+ ps aux | grep connect-dist
+ pwd
+ kill -9 3662
+ ps aux | grep connect-dist
+ cd libs
+ ls -lrth
+ mv kafka-connector-0.0.1-SNAPSHOT.jar kafka-connector-0.0.1-SNAPSHOT.jar_0908
+ ls -lrth
+ cp -r /tmp/kafka-connector-0.0.1-SNAPSHOT.jar .
+ ls -lrth
+ cd ..
+ nohup bin/connect-distributed.sh config/connect-distributed.properties &
+ ps aux | grep connect-dist
+ curl -d @connector.json  -H "Content-Type: application/json"  -X POST http://172.31.27.113:8083/connectors
+ tail -f logs/connector.log
+
+
+----------------------------
+
+13.232.194.131
+
+---------------------------
+ cd /Kafka-Data/kafka-live/
+ ll /mnt
+ ll /tmp
+ cp -r /Kafka-Data/kafka-live/libs/kafka-connector-0.0.1-SNAPSHOT.jar /Kafka-Data/kafka-connector_Backup/kafka-connector-0.0.1-SNAPSHOT_09082023.jar
+ pwd
+ ps aux | grep connect-dist
+ kill -9 6753
+ ps aux | grep connect-dist
+ cd libs
+ ls -lrth
+ mv kafka-connector-0.0.1-SNAPSHOT.jar kafka-connector-0.0.1-SNAPSHOT.jar_0908
+ ls -lrth
+ cp -r /tmp/kafka-connector-0.0.1-SNAPSHOT.jar .
+ ls -lrth
+ cd ..
+ nohup bin/connect-distributed.sh config/connect-distributed.properties &
+ ps aux | grep connect-dist
+ exit
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+  13.234.50.170
+  -------------
+
+ cd /Kafka-Data/kafka-live/
+ ll /mnt
+ ll /mnt
+ ll /tmp
+ cp -r /Kafka-Data/kafka-live/libs/kafka-connector-0.0.1-SNAPSHOT.jar /Kafka-Data/kafka-connector_Backup/kafka-connector-0.0.1-SNAPSHOT_09082023.jar
+ pwd
+ ps aux | grep connect-dist
+ kill -9 24014
+ ps aux | grep connect-dist
+ cd libs
+ ls -lrth
+ mv kafka-connector-0.0.1-SNAPSHOT.jar kafka-connector-0.0.1-SNAPSHOT.jar_0908
+ ls -lrth
+ cd ..
+ cd libs
+ cp -r /tmp/kafka-connector-0.0.1-SNAPSHOT.jar .
+ ls -lrth
+ cd ..
+ nohup bin/connect-distributed.sh config/connect-distributed.properties &
+ ps aux | grep connect-dist
+ sudo su kafka
+-----------------------------------------------------------------TYPE-2 Connector Production Deployment-------------------------------------------------------------------
+
+
+
+20- 
+Kafka Connector Jar Deployment on Kafka Production Server
+
+Step1:- Backup to kafka-connector-0.0.1-SNAPSHOT.jar from all three kafka servers.
+	 
+     #cp -r /Kafka-Data/kafka-live/libs/kafka-connector-0.0.1-SNAPSHOT.jar /Kafka-Data/kafka-connector_Backup/kafka-connector-0.0.1-SNAPSHOT_20082021.jar
+
+Step2:- Copy to  kafka-connector-0.0.1-SNAPSHOT.jar to all three kafka servers from QA  kafka Server(164.52.195.22) or jenkins.
+
+     #scp -r  kafka-connector-0.0.1-SNAPSHOT.jar ec2-user@IP:/tmp/
+
+Step3:- Go to first kafka server(13.232.194.131) and run the cammand from kafka user   -----> this command run on only  which is master
+       $curl -X DELETE http://172.31.20.206:8083/connectors/live-scada-connector
+
+Step4:- stop the process of connect-distributed from three servers.
+   $ kill -9 process-id
+
+Step5:- Go on browser for access http://13.127.115.148:7000 and delete three topics
+
+Topics Name:- live-connect-configs , Live-connect-offsets, Live-connect-status
+
+Step6:- if any update please update in connector.json file other wise leave this process.
+
+Step7:- Start the process of connect-distributed on three servers.
+
+$cd /Kafka-Data/kafka-live/libs
+$ cp -r /tmp/kafka-connector-0.0.1-SNAPSHOT.jar .
+$ cd ..
+
+$nohup bin/connect-distributed.sh config/connect-distributed.properties &
+
+Step8:- Run the command for creation of connector on first server 13.232.194.131
+
+$curl -d @connector.json  -H "Content-Type: application/json"  -X POST http://172.31.20.206:8083/connectors   -----> this command run on only  which is master
+
+Step9:- Check the logs on three servers.
+$ tail -f /Kafka-Data/kafka-live/logs/connector.log
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------kafka-production connector restart------------------------------------------------------------------------------
+Step1:- Go to first kafka server(13.232.194.131) and run the cammand from kafka user   -----> this command run on only  which is master
+       $curl -X DELETE http://172.31.27.113:8083/connectors/live-scada-connector
+
+Step2:- stop the process of connect-distributed from three servers.
+   $ kill -9 process-id
+
+Step3:- Go on browser for access http://13.127.115.148:7000 and delete three topics
+
+Topics Name:- live-connect-configs , Live-connect-offsets, Live-connect-status
+
+Step4:- if any update please update in connector.json file other wise leave this process.
+
+Step5:- Start the process of connect-distributed on three servers.
+
+$cd /Kafka-Data/kafka-live
+$nohup bin/connect-distributed.sh config/connect-distributed.properties &
+
+Step6:- Run the command for creation of connector on first server 13.127.115.148
+
+$curl -d @connector.json  -H "Content-Type: application/json"  -X POST http://172.31.27.113:8083/connectors   -----> this command run on only  which is master
+
+Step7:- Check the logs on three servers.
+$ tail -f /Kafka-Data/kafka-live/logs/connector.log
+
+-----------------------------------------------------------------TYPE-2-Coonetor -Restart---------------------------------------------------------------------------------
+1- on 148
+
+
+ curl -X DELETE http://172.31.27.113:8083/connectors/live-scada-connector
+ ps aux | grep connect-dist
+ kill -9 < connect-dist >
+ topic delete on browser
+ nohup bin/connect-distributed.sh config/connect-distributed.properties &
+ curl -d @connector.json  -H "Content-Type: application/json" -X POST http://172.31.27.113:8083/connectors
+ ps aux | grep connect-dist
+ tail -f /Kafka-Data/kafka-live/logs/connector.log
+ ps aux | grep connect-dist
+ tail -f /Kafka-Data/kafka-live/logs/connector.log
+
+
+
+2- on  13.232.194.131
+
+ ps aux | grep connect-dist
+ kill -9 3007
+ ps aux | grep connect-dist
+ nohup bin/connect-distributed.sh config/connect-distributed.properties &
+
+3- on 13.234.50.170
+
+
+
+ cd /Kafka-Data/kafka-live/
+ ps aux | connect-dist
+ ps aux | grep connect-dist
+ kill -9 17468
+ ps aux | grep connect-dist
+ nohup bin/connect-distributed.sh config/connect-distributed.properties &
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------Database access --------------------------------------------------------------------------------------
+
+
+DATABASE
+
+now create a user by log in to mysql database
+CREATE USER 'suresh'@'localhost' IDENTIFIED BY 'Suresh@1212';
+
+
+
+CREATE USER 'user'@'ip_address' IDENTIFIED BY 'Admin@1212';
+
+CREATE USER 'user'@'%' IDENTIFIED BY 'Admin@1212';
+
+GRANT ALL PRIVILEGES ON *.* TO 'sumanta'@'%';
+
+** Add the ip in IP tables and restart.
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'ip_address';
+
+GRANT ALL PRIVILEGES ON database.* TO 'user'@'yourremotehost'IDENTIFIED BY 'newpassword';
+
+GRANT SELECT,UPDATE,INSERT,ALTER ON databasename.* TO 'User'@'yourremotehost' IDENTIFIED BY 'newpassword';
+
+GRANT ALL PRIVILEGES ON samast.* TO 'user'@'ip_address'; (to give access on samast database)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+drop user 'zabbix@'localhost';
+
+
+
+
+
+SELECT user FROM mysql.user;
+flush privileges;
+delete from mysql.user where user='zabbix';
+drop user 'vijay'@'14.99.243.138';
+GRANT SELECT,INSERT,UPDATE,ALTER ON hea.* TO 'vijay'@'14.99.243.138';
+GRANT ALL PRIVILEGES ON 50hzauth.* TO 'anuj'@'182.76.9.122';
+GRANT ALL PRIVILEGES ON 50hzauth.* TO 'anuj'@'14.99.243.138';
+SHOW GRANTS FOR 'adarsh'@'14.99.243.138';
+
+GRANT SELECT, INSERT, UPDATE, CREATE, RELOAD, SHUTDOWN, PROCESS, FILE, REFERENCES, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, CREATE USER, EVENT, TRIGGER, CREATE TABLESPACE ON epm.* TO 'adarsh'@'14.99.243.138'; |
+
+
+GRANT EXECUTE ON PROCEDURE epm.* TO 'adarsh'@'14.99.243.138';
+GRANT SELECT,DELETE,UPDATE PRIVILEGES ON epm.* TO 'adarsh'@'14.99.243.138';
+
+GRANT EXECUTE ON PROCEDURE epm.* TO 'adarsh'@'14.99.243.138';
+                                                                                                                                                                                                                                    
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER ON `50hzauth`.* TO 'adarsh'@'14.99.243.138'
+GRANT SELECT, INSERT, UPDATE, ALTER ON `epm`.* TO 'adarsh'@'14.99.243.138' 
+
+REVOKE ALL PRIVILEGES ON *.* FROM ''@'localhost';
+REVOKE ALL PRIVILEGES ON *.* FROM 'jeffrey'@'%';
+FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON *.* TO 'adarsh'@'14.99.243.138';
+
+SHOW GRANTS FOR 'adarsh'@'14.99.243.138';
+
+
+                                                                                       
+
+
+
+
+--------------------------------
+
+>db.createUser(
+{
+user: "arpit1",
+pwd: "Arpit1@1212",
+roles: [ "readWrite" ]
+}
+);
+
+
+
+
+
+
+ db.updateUser(
+... "chetan",{
+... roles: [ "readWrite" ]
+... }
+... );
+
+
+
+
+
+db.createUser(
+{
+user: "chetan",
+pwd: "Chetan@1212",
+roles: [ "read" ]
+}
+);
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+CREATE USER 'adarsh'@'14.99.243.138' IDENTIFIED BY 'Adarsh@1212';
+
+
+CREATE USER 'adarsh'@'%' IDENTIFIED BY 'Adarsh@1212';
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+19-
+++ Check number of files of kaffka qa(22) as well as prod(148).
+
+go to 22
+
+cd /home/kafka/kafka-files
+
+ls -lrth | wc -l
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+20- 
++++ Resolve The issue When Promethious(172.16.0.70:9090/targets) not scrapping data to Grafana(node-exporter)(172.16.0.70:3000).
+
+docker run -d -p 9104:9100 --name=node-exporter prom/node-exporter
+ docker run -d -p 8084:8080 -v /:/rootfs:ro -v /var/run:/var/run:rw -v /sys:/sys:ro -v /var/lib/docker/:/var/lib/docker:ro --name=cadvisor google/cadvisor:latest
+ docker container start node-exporter
+ docker container start cadvisor
+ 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+21-
+--- How to Deploy and restart R
+
+generlay SAMAST QA model run on 177 server
+
+copy to 237
+
+go to 177 and go to samast_home/files/models
+
+Rscript < model name > 
+
+like : Rscript PB_MLR_3V_3hrs.R hit enter.
+
+to check R model is running typ R and hit enter 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+22-
+start jar on wind3
+
+ ps aux | grep ' -jar'
+ cd /home/DEPLOY/WIND/CURRENT/
+ nohup java -jar schedule-batch.jar &
+ nohup java -jar global-forecast-batch.jar &
+ nohup java -jar scada-import-batch.jar &
+ ps aux | grep ' -jar'
+ cd ../../SOLAR/CURRENT/
+ nohup java -jar SPFS-SCADA-1.jar &
+ nohup java -jar SPFS_Forecaster-1.jar &
+ nohup java -jar SPFS-Schedule-1.jar &
+ ps aux | grep ' -jar'
+ ls -lrth
+--------------------------------------------------------------JAR- Deployment -------------------------------------------------------------------------------------------------
+23-
+1- samast-dsm-service
+
+prerequsites
+
+- dockerfile
+
+- jar
+
+note: both should be in same directory
+
+ex: 
+
+mkdir SPFS SCADA
+
+inside you have dockerfile and jar
+
+note: inside dockerfile yo have to change the name of jar
+
+dockerfile
+--------------------------------------
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE=/samast-dsm-service-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} samast-dsm-service-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Duser.timezone=IST","-jar","/samast-dsm-service-0.0.1-SNAPSHOT.jar"]
+================= 
+
+now run the following command
+
+ docker build -t energy:nvkn-schedule-submission1 .
+ docker tag energy:nvkn-schedule-submission1  50hertz/energy:nvkn-schedule-submission1
+ docker push 50hertz/energy:nvkn-schedule-submission1
+------------------------------------------------------------------------------------------------
+
+ docker build -t spfs-scada-master20062023 .
+ docker tag spfs-scada-master20062023  50hertz/energy:spfs-scada-master20062023
+ docker push 50hertz/energy:spfs-scada-master20062023
+
+
+
+Go to the portainer and check the images tag and image name
+
+50hertz/samast:samast-dsm-service-feature-bleeding-edge
+
+docker build -t samast-dsm-service-feature-bleeding-edge .
+
+docker images
+
+docker tag samast-dsm-service-feature-bleeding-edge 50hertz/samast:samast-dsm-service-feature-bleeding-edge
+
+docker login
+
+docker push 50hertz/samast:samast-dsm-service-feature-bleeding-edge
+
+
+Now go to docker hub and check the image is there or not 
+
+--------------------------------------------------------------war deployment manualy--------------------------------------------------------------------------------------------
+ex: for re-config-mgmt
+
+Dockerfile for War
+
+FROM tomcat:8-jre8
+
+MAINTAINER "Devops <linux.support@manikarananalytics.in>"
+ENV CATALINA_OPTS="-Dserver.mode=prod -Duser.timezone=Asia/Kolkata"
+ADD ROOT.war /usr/local/tomcat/webapps/
+ADD SEL_UI.war /usr/local/tomcat/webapps/
+ADD SEL-webapp.war /usr/local/tomcat/webapps/
+ADD SOLAR_UI.war /usr/local/tomcat/webapps/
+ADD SPFS_webapp.war /usr/local/tomcat/webapps/
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
+
+
+
+go to inside the directory where you copy two war files and Dockerfile
+
+
+- Dockerfile
+
+- SPFS_webapp.war
+
+- SOLAR_UI.war
+- ROOT.war
+- SEL_UI.war
+- SEL-webapp.war
+
+- put both in same dir and change war name in docker file
+
+- builf image
+
+- tag image
+
+- login docker hub
+
+- push image to docker by docke push
+
+- pull the image from portainer
+
+
+----------------------------------------------------------------------------opcua ------------------------------------------------------------------------------------------
+24-
+select * from eden order by id desc limit 20;
+
+select * from  mcnally order by id desc limit 20;
+
+select * from edenb order by id desc limit 20;
+
+select * from  jbm_b1 order by id desc limit 20;
+select * from  jbm_b2 order by id desc limit 20;
+select * from  jbm_b3 order by id desc limit 20;
+select * from  jbm_b4 order by id desc limit 20;
+select * from  jbm_b5 order by id desc limit 20;
+select * from  jbm_b6 order by id desc limit 20;
+select * from  jbm_b7 order by id desc limit 20;
+select * from  jbm_b8 order by id desc limit 20;
+select * from  jbm_b9 order by id desc limit 20;
+select * from  jbm_b10 order by id desc limit 20;
+select * from  jbm_b11 order by id desc limit 20;
+select * from  jbm_b12 order by id desc limit 20;
+select * from  jbm_b13 order by id desc limit 20;
+select * from  jbm_b14 order by id desc limit 20;
+select * from  jbm_b15 order by id desc limit 20;  ---> This will select the last 50 rows from table(jbm_b15) and then order them in ascending order.
+
+------------
+Note: for jbm and other tables
+Note: first stop the datalogeer
+      rename table
+      start datalogger
+      then run rest of three commands
+
+--------for eden edenb mcnally
+RENAME TABLE eden TO eden30082023;
+CREATE INDEX idx_TIMESTAMP on eden(_TIMESTAMP);
+ALTER TABLE eden add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+--
+RENAME TABLE edenb TO edenb30082023;
+CREATE INDEX idx_TIMESTAMP on edenb(_TIMESTAMP);
+ALTER TABLE edenb add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+---
+RENAME TABLE mcnally TO mcnally12092023;
+CREATE INDEX idx_TIMESTAMP on mcnally(_TIMESTAMP);
+ALTER TABLE mcnally add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+---------------------
+
+RENAME TABLE jbm_alarm TO jbm_alarm30082023;
+RENAME TABLE jbmg2 TO jbmg2_29082023;
+RENAME TABLE 2jbm40 TO 2jbm40_29082023;
+RENAME TABLE 2jbm60 TO 2jbm60_29082023;
+
+
+CREATE INDEX idx_TIMESTAMP on jbm_alarm(_TIMESTAMP);
+CREATE INDEX idx_TIMESTAMP on jbmg2 (_TIMESTAMP);
+CREATE INDEX idx_TIMESTAMP on 2jbm40(_TIMESTAMP);
+CREATE INDEX idx_TIMESTAMP on 2jbm60(_TIMESTAMP);
+
+
+
+ALTER TABLE jbm_alarm add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE jbmg2 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE 2jbm40 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE 2jbm60 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+CREATE INDEX idxProcFlag on jbm_alarm(procFlag,_TIMESTAMP);
+CREATE INDEX idxProcFlag on jbmg2(procFlag,_TIMESTAMP);
+CREATE INDEX idxProcFlag on 2jbm40(procFlag,_TIMESTAMP);
+CREATE INDEX idxProcFlag on 2jbm60(procFlag,_TIMESTAMP);
+--------------------------------------------------------------------
+RENAME TABLE 2jbm40 TO 2jbm40_13092023;
+CREATE INDEX idx_TIMESTAMP on 2jbm40(_TIMESTAMP);
+ALTER TABLE 2jbm40 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+CREATE INDEX idxProcFlag on 2jbm40(procFlag,_TIMESTAMP);
+
+
+
+RENAME TABLE 2jbm60 TO 2jbm60_11092023;
+CREATE INDEX idx_TIMESTAMP on 2jbm60(_TIMESTAMP);
+ALTER TABLE 2jbm60 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+CREATE INDEX idxProcFlag on 2jbm60(procFlag,_TIMESTAMP);
+
+
+
+
+
+
+
+
+################################################### RENAME SCRIPT #########################################################
+For JBM
+
+RENAME TABLE 2jbm40 TO 2jbm40_BKP;
+RENAME TABLE 2jbm60 TO 2jbm60_BKP;
+RENAME TABLE 3jbm40alarm TO 3jbm40alarm_BKP;
+RENAME TABLE 3jbm60alarm TO 3jbm60alarm_BKP;
+
+################################################### INDEX SCRIPT ##############################################################
+
+CREATE INDEX idx_TIMESTAMP on 2jbm40(_TIMESTAMP);
+CREATE INDEX idx_TIMESTAMP on 2jbm60(_TIMESTAMP);
+CREATE INDEX idx_TIMESTAMP on 3jbm40alarm(_TIMESTAMP);
+CREATE INDEX idx_TIMESTAMP on 3jbm60alarm(_TIMESTAMP);
+
+##################################################### ADDING PROC FLAG AND CREATEDATETIME COLUMNS #################################
+
+ALTER TABLE 2jbm40 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE 2jbm60 add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE 3jbm40alarm add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE 3jbm60alarm add COLUMN `procFlag` varchar(4) DEFAULT 'N',add COLUMN  `createddatetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+################################################### INDEX SCRIPT ##############################################################
+CREATE INDEX idxProcFlag on 2jbm40(procFlag,_TIMESTAMP);
+CREATE INDEX idxProcFlag on 2jbm60(procFlag,_TIMESTAMP);
+CREATE INDEX idxProcFlag on 3jbm40alarm(procFlag,_TIMESTAMP);
+CREATE INDEX idxProcFlag on 3jbm60alarm(procFlag,_TIMESTAMP);
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------make ftp in wind 3---------------------------
+25-
+
+useradd surya -s /sbin/nologin
+passwd surya
+123456
+
+cd ../
+chmod -R 755 sp-directory
+setfacl -m u:surya:rx /home/wind/
+setfacl -m u:surya:rx /home/wind/WIND
+setfacl -m u:surya:rx /home/wind/WIND/sp-directory/
+setfacl -R -m u:surya:rwx /home/wind/WIND/sp-directory/
+
+
+----> now access to the ftp from file zilla----------------
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26-
+--------------------------------------------------------------------------------issue when devloper not able to push the code ---------------------------------------------
+
+ssh git@bitbucket.org host_key_info----->to check it is automatically rotated or not rotated
+ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts--------> key rotation for ssh in bitbucket 
+
+
+  note: run these below commands as user 
+
+  ssh git@bitbucket.org host_key_info
+  ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts
+  ssh git@bitbucket.org host_key_info
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27-
+- To know the size of mysql database.
+
+SELECT table_schema "database_name",ROUND(SUM(data_length + index_length) / 1024 / 1024/1024, 1) "DB Size in GB"  FROM information_schema.tables  GROUP BY table_schema;
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+28-
+------------------------------------------------------------------------To make sftp ------------------------------------------------------------------------------------
+
+sudo adduser rohit
+
+sudo passwd  rohit
+
+Password@123#
+
+sudo mkdir -p /var/sftp/uploads
+
+sudo chown root:root /var/sftp
+
+sudo chmod 755 /var/sftp
+
+sudo chown rohit:rohit /var/sftp/uploads
+
+sudo vi /etc/ssh/sshd_config
+
+
+Match User rohit
+ForceCommand internal-sftp
+PasswordAuthentication yes
+ChrootDirectory /var/sftp
+PermitTunnel no
+AllowAgentForwarding no
+AllowTcpForwarding no
+X11Forwarding no
+
+
+sudo systemctl restart sshd
+
+
+ssh rohit@localhost
+
+
+sftp rohit@localhost
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+29-
+--------------------------------------------------------------------make ftp in wind3-----------------------------------------------------------------------------------
+
+ cd /home/wind/
+ ls
+ cd WIND/
+ ls
+ mkdir -p ftp-schedule
+ cd ftp-schedule/
+ pwd
+ useradd test -s /sbin/nologin 
+ passwd test
+ cd ..
+ chmod -R 755 ftp-schedule/
+ setfacl -m u:test:rx /home/wind/
+ setfacl -m u:test:rx /home/wind/WIND
+ setfacl -m u:test:rx /home/wind/WIND/ftp-schedule/
+ setfacl -R -m u:test:rwx /home/wind/WIND/ftp-schedule/
+ cd ftp-schedule/
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------bitbucket repo access--------------------------------------------------------------------------------------
+
+1- go to bibucket
+2- project like epm
+3- select epm
+4- under repository go to again epm
+5- Repository setting
+6- Repository permission
+7- click Add user and enter email-id and provide write access
+8-check from user end
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------Jira access and bitbucket prject access -------------------------------------------------------------
+1- go to bibucket --> project
+
+2- 
+
+
+
+
+---------------------------------------------------------------Give access to archive folder ----------------------------------------------------------------------------------
+
+ cd /home/wind/arch/
+ cd scada_2020/
+ cd wind/
+ ls
+ cd SOLAR/
+ cd TS/Pargi_Glob/
+ setfacl -m u:anadel:rwx /home/wind/arch/scada_2020/wind/SOLAR/TS/Pargi_Glob
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------Update docker service via command line -----------------------------------------------------------------------
+If you want to update docker service image, you can simply do 
+
+
+docker service update --image myimage:tag servicename
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------Take dump and restore to another local user ( like from adarsh to abhishek)----------------------------------------------------
+
+- first go to mysql shell of that user and check that databaseis exist for which you are going to take dump.
+
+# mysql -uroot -p
+
+- take dump of that db if it is exist.
+
+# mysqldump -u root -pAdmin@1212 50hzauth | gzip > 50hzauth_20012023.sql.gz
+
+
+- copy to another user folder user home directory.
+
+# scp -r 50hzauth_20012023.sql.gz root@172.16.1.137:/home/abhishek/
+
+- Now go to Abhishek system and unzip the dump in /home/abhishek
+
+# gunzip 50hzauth_20012023.sql.gz 
+
+- go to mysql shell of abhishek user and check That DB is exist with name if not then create the DB.
+
+# create database 50hzauth; --> now come out from mysql shell
+
+# mysql -uroot -pAdmin@1212 50hzauth < 50hzauth_20012023.sql
+
+- again go back to mysql shell and confirm the DB is restore or not.
+
+---cmds:
+# Take Dump from one system and restore to another system. for mysql.
+
+
+
+mysql -u root -p
+mysqldump -u root -pAdmin@1212 50hzauth | gzip > 50hzauth_20012023.sql.gz
+ls -lrth
+scp -r 50hzauth_20012023.sql.gz root@172.16.1.137:/home/abhishek/
+ssh root@172.16.1.137
+cd /home/abhishek/
+ls -lrth
+gunzip 50hzauth_20012023.sql.gz
+mysql -uroot -pAdmin@1212  ----< check the db exist or not.
+mysql -uroot -pAdmin@1212 50hzauth < 50hzauth_20012023.sql 
+mysql -u root -p
+mysql -uroot -pAdmin@1212  ---> check the database exist or not.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+# STop The path inside the script in ftp for solar user in ftp server. and provide the access of this path to kafkadw user.
+
+cd /home/wind/SOLAR/REC/KAMUTHI/AGTEl
+ls -lrth and see the file is up to date or not.
+
+now open crontan -l and search for KAMUTHI.sh file or search in FTP-WIND-SOLAR-folder.
+
+vim KAMUTHI.sh
+
+and comment the line 
+
+which is 
+
+SR /home/wind/SOLAR/REC/KAMUTHI/AGTEl
+
+now again check in that path in ftp server you will find files are stopped.
+
+now the last task to provide access to the dir for kafkadw user.
+setfacl -m u:kafkadw:rx /home/wind/SOLAR/REC/KAMUTHI/AGTEl
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Trouble error in windows for mysqlworkbench 
+
+error is for .png file.
+
+just go to contorl panel > workbench > repair.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------How To White list any ip in AWS For Any Instance.---------------------------------------------------------------
+
+go to that instance security group
+
+- go to inbound rule
+
+- add rule and for ssh open ssh and give ip which you want to whitelist
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------- Make user with or without shell-----------------------------------------------------------------------
+
+useradd  -s /bin/bash vijay --> with shell
+
+ useradd -s /sbin/nologin vijay --> without shell
+
+ usermod -s /bin/bash vijay     --> modify user again access to shell.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------Rsync script--------------------------------------------------------------------------------------------
+#!/bin/bash
+
+/usr/bin/rsync -avz root@205.147.98.133:/home/anvaya/* /DATA/anvaya/
+if [ "$?" = "0" ]
+then
+echo "Legal FTP data sync done from WIND-3 at $(/usr/bin/date +%Y-%m-%d_%-H:%M)"
+else
+echo "Legal FTP data sync failed from WIND-3 at $(/usr/bin/date +%Y-%m-%d_%-H:%M)"
+fi
+exit
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------delete ser file 
+
+ ls -lrth 5fbe3e8a39ac677b01a6861e*
+ ls -lrth *5fbe3e8a39ac677b01a6861e.ser
+ ls -lrth *5fbe3e8a39ac677b01a6861e
+ ls -lrth *5fbe3e8a39ac677b01a6861e*
+ ls -lrth *5df201fe628d52acff772dc3*
+ rm -rf 5df201fe628d52acff772dc3-Kolithad-0.ser
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Build of nvkn-schedule-submission-qa
+                
+docker build -t nvkn-schedule-submission-qa .
+docker tag nvkn-schedule-submission-qa  50hertz/energy:nvkn-schedule-submission-qa
+                                        
+docker push 50hertz/energy:nvkn-schedule-submission-qa
+            
+
+50hertz/energy:nvkn-schedule-submission-qa
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Re-start OPC jar
+
+go to ftp server
+go to home/DEPLOY/SOLAR/CURRENT/
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------Weather-UI- qa Build -----------------------------------------------------------
+
+Note: you need to place both Weather_UI.war and Weather-webapp.war on same location where is dockerfile prestent. Download these files from 68 jenkins (/var/lib/jenkins/workspace/eather-qa1_feature_bleeding-edge).
+
+
+
+Dockerfile
+
+
+
+FROM tomcat:8-jre8
+MAINTAINER "Devops <linux.support@manikarananalytics.in>"
+ENV CATALINA_OPTS="-DEPM_HOME=/home -Dserver.mode=qa -Duser.timezone=Asia/Kolkata"
+ADD Weather_UI.war /usr/local/tomcat/webapps/
+ADD Weather-webapp.war /usr/local/tomcat/webapps/
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
+
+-----
+
+  docker build -t weather-qa-07091202 .
+  docker tag weather-qa-07091202  50hertz/energy:weather-qa-07091202
+  docker push 50hertz/energy:weather-qa-07091202
+
+# Now check on docker hub and update image from gamesha swarm of weatherui.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++Start kafka on Asset - production++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+echo "ruok" | nc localhost 2181 ; echo
+
+bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+
+bin/kafka-server-start.sh -daemon config/server.properties
+
+/home/kafka/confluent/bin/ksql-server-start -daemon /home/kafka/confluent/etc/ksql/ksql-server.properties
+
+bin/connect-standalone.sh config/connect-standalone.properties config/MongoSinkConnector.properties
+
+bin/connect-standalone.sh config/connect-standalone.properties config/MongoSourceConnector.properties
+-------
+bin/zookeeper-server-stop.sh
+
+bin/kafka-server-stop.sh
+
+bin/ksql-server-start -daemon etc/ksql/ksql-server.properties
+
+/home/kafka/confluent/bin/ksql-server-stop
+
+bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+
+bin/kafka-server-start.sh -daemon config/server.properties
+
+Note: the below command run at /home/kafka/confluent/ location .
+
+bin/ksql-server-start -daemon etc/ksql/ksql-production-server.properties
+
+----------------------------------------------------------
+cd /home/kafka/kafka/
+bin/zookeeper-server-start.sh -daemon config/zookeeper.properties
+
+bin/kafka-server-start.sh -daemon config/server.properties
+
+cd /home/kafka/conflunet/
+
+bin/ksql-server-start -daemon etc/ksql/ksql-production-server.properties
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++S
+
+ssh the bidsaap server
+ssh admin@3.7.173.57
+
+(3.7.173.57).
+sudo su
+su - mpl
+cd /home/mpl/web
+check process
+run command--->/usr/bin/perl utils/process-reports& 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--artifactory run as docker container with volume
+
+docker run --name artifactory -v /root/.jfrog/artifactory/var/:/var/opt/jfrog/artifactory -d -p 8081:8081 -p 8082:8082 releases-docker.jfrog.io/jfrog/artifactory-oss:latest
+
+-----------------------------------------------------------hazelcast docker container creation --------------------------------------------------------------------------
+
+docker run -d --restart always --name prod  -e HZ_NETWORK_PUBLICADDRESS=192.168.101.28:5701 -e HZ_CLUSTERNAME=prod -p 5701:5701 hazelcast/hazelcast:5.3.2
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------Credentials.txt----------------------------------------------------------------------------------------------
+my email - surya.p@50hetz.in
+password - #$%^Hertz$.$P
+
+my employee id 10337
+
+password Password@123
+
+
+
+
+1- Grafana/node-exporter
+
+172.16.0.70:3000
+admin
+Enteragain+++
+
+2- Grafana for DB 
+
+50health.50hertz.in
+
+Admin
+
+Admin
+
+3- re50hertz.in
+
+linux.support@manikarananalytics.in
+linux@321
+
+4- docker hub
+
+admin@50hertz.in
+
+Username: 50hertz
+
+password: Mpl@12345#
+
+5- bitbucket, jeera
+
+https://id.atlassian.in
+October@2022#
+
+6- authqa.50hertz.in
+
+arpit.sharma@50hertz.in
+Password@123
+
+7- observioum
+
+http://50health.50hertz.in:81
+
+admin
+Enteragain+++
+
+8- health Reports
+
+http://50health.50hertz.in:82/Report/
+
+
+9- jenkins-68
+
+
+https://ci.50hertz.in/
+
+admin@50hertz.in
+April@2023#
+
+10- jenkins-66
+
+172.16.0.66:8082
+admin
+Password@9716
+
+11 - Portainer
+
+172.16.0.68:9100
+
+devops
+yPg6p5F23WFFnh
+
+
+12- Portainer-254
+164.52.201.254:9100
+
+admin
+
+Password@110077
+
+
+
+13 - my anydesk and password
+
+481 160 274
+Password@123#
+
+
+14- Window password
+
+De$kT0pM@n!
+
+15- mysamba
+
+user- Suryasp
+
+Password - 123456
+
+16- myteam mate someshvar email and password.
+
+ someshvar.vinay@50hertz.in
+
+        #$%^Hertz$$V
+
+17 - MY Personal AWS Account Password.
+
+suryaprakashofficial591@gmail.com
+SURYAji@1012
+
+18 -  
+
+      nvkn.50hertz.in
+
+      Password@123
+
+
+19- my oracle account password
+
+surya.p@50hertz.in
+Password@123#
+
+20- health report url
+
+http://50health.50hertz.in:82/Report/
+
+21- coursera
+
+surya591
+
+9675927707@1012
+
+22- myIAM user
+
+Console sign-in URL
+https://surya-devops-engineer.signin.aws.amazon.com/console
+surya
+SURYAji@10123
+
+23- my gihub personal token
+
+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
+
+mygithub account
+
+suryaprakashthebest
+
+9675927707@1012
+
+24- AWS credentials	
+old account admin@50hertz.in(768945936662)	        GrandMa@Geek
+new account manikaran50hertz@gmail.com(811689726013)	GrandMa@Geek##
+IAMUSER for new account
+demo  October@2022##
+
+
+25- samast production portainer
+
+192.168.200.13:9100
+admin
+AdMin@#123#$
+
+
+26- asset production portainer
+
+admin
+Password@110077
+
+27- jenkins 172.16.0.66:8082
+
+admin
+Password@9716
+
+28- portainer 172.16.0.68:9100
+
+devops
+1#3eh4L9Yl0Yrf
+
+29- 172.16.0.70:3000
+
+admin
+Enteragain+++
+
+30- observium 50health.50hertz.in:81
+
+admin
+Enteragain+++
+
+31- 50health.50hertz.in
+
+Admin
+Admin
+
+32- af.50hertz.in
+
+admin
+Admin@1212
+
+33- zabbix 172.16.1.141:9100
+
+admin
+Password@123#
+
+34- somesh github user and token
+user:  someshvar26
+password: S@123vinay
+token: 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
+
+35- amresh sir system
+
+administrator
+IINDIANARMY
+
+36- VPN credentials
+
+PBSMTFWL
+Samusr@#123
+
+37- samast portainer
+
+admin
+	
+Samuser@#1234
+
+38- my-btbucket 
+
+suryaprakashofficial691@gmail.com
+
+Suryadevops
+
+96759277071012
+
+----------------------------------------------------------------------nginx-reverse-proxy-------------------------------------------------------------------------------------
+vim /etc/nginx/conf.d/surya.conf       ----> file name could be anything
+
+server {
+    listen 80;
+    server_name 192.168.122.52;
+    location / {
+            proxy_redirect      off;
+            proxy_buffering     off;
+            proxy_set_header    X-Real-IP $remote_addr;
+            proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header    X-Forwarded-Proto $scheme;
+            proxy_set_header    Accept-Encoding "";
+            proxy_set_header    Host $host;
+            proxy_pass          http://192.168.122.52:8080;# YOUR TOMCAT IP ADDRESS
+
+    }
+} 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------iptables ---------------------------------------------------------------------------------------
+---for 177
+# Generated by iptables-save v1.4.21 on Sat Dec 14 12:12:03 2019
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [1636:404572]
+:DOCKER - [0:0]
+:DOCKER-INGRESS - [0:0]
+:DOCKER-ISOLATION-STAGE-1 - [0:0]
+:DOCKER-ISOLATION-STAGE-2 - [0:0]
+:DOCKER-USER - [0:0]
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth1 -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+#-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,13.126.148.5,14.99.243.138,172.16.115.163,13.127.226.165,172.16.126.236  --dport 22 -j ACCEPT
+#-A INPUT -p udp -s 118.185.255.98,182.76.9.122,14.99.243.138  --dport 161 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 1167 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 10050 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 3000 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -p tcp -m tcp --dport 2888 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -p tcp -m tcp --dport 3888 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -p tcp -m tcp --dport 2181 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -p tcp -m tcp --dport 9092 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -p tcp -m tcp --dport 9093 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -p tcp -m tcp --dport 8030 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 2377 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 8761 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 8765 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 8889 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 9761 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 9765 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 9888 -j ACCEPT
+-A INPUT -s 184.75.223.235/32 -j DROP
+-A INPUT -s 66.240.236.116/32 -j DROP
+-A INPUT -s 31.220.1.83/32 -j DROP
+-A INPUT -s 167.94.146.78/32 -j DROP
+-A INPUT -s 107.170.227.28/32 -j DROP
+-A INPUT -s 94.102.61.20/32 -j DROP
+-A INPUT -s 103.203.57.21/32 -j DROP
+#-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138,172.16.100.196,172.16.101.71,172.16.107.60,172.16.114.249,172.16.115.2,172.16.110.14,172.16.127.15  --dport 6311 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 6311 -j ACCEPT
+#-A INPUT -m state --state NEW -p tcp -m tcp --dport 8088 -j ACCEPT
+-A INPUT -p udp -m udp --dport 161 -j ACCEPT
+-A INPUT -s 172.16.100.196/32 -i eth1 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 9001 -j ACCEPT
+-A FORWARD -j DOCKER-USER
+-A FORWARD -j DOCKER-INGRESS
+-A FORWARD -j DOCKER-ISOLATION-STAGE-1
+-A FORWARD -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -o docker0 -j DOCKER
+-A FORWARD -i docker0 ! -o docker0 -j ACCEPT
+-A FORWARD -i docker0 -o docker0 -j ACCEPT
+-A FORWARD -o docker_gwbridge -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -o docker_gwbridge -j DOCKER
+-A FORWARD -i docker_gwbridge ! -o docker_gwbridge -j ACCEPT
+-A FORWARD -i docker_gwbridge -o docker_gwbridge -j DROP
+-A DOCKER -d 172.18.0.5/32 ! -i docker_gwbridge -o docker_gwbridge -p tcp -m tcp --dport 9001 -j ACCEPT
+-A DOCKER-INGRESS -j RETURN
+-A DOCKER-ISOLATION-STAGE-1 -i docker0 ! -o docker0 -j DOCKER-ISOLATION-STAGE-2
+-A DOCKER-ISOLATION-STAGE-1 -i docker_gwbridge ! -o docker_gwbridge -j DOCKER-ISOLATION-STAGE-2
+-A DOCKER-ISOLATION-STAGE-1 -j RETURN
+-A DOCKER-ISOLATION-STAGE-2 -o docker0 -j DROP
+-A DOCKER-ISOLATION-STAGE-2 -o docker_gwbridge -j DROP
+-A DOCKER-ISOLATION-STAGE-2 -j RETURN
+-A DOCKER-USER -j RETURN
+COMMIT
+# Completed on Sat Dec 14 12:12:03 2019
+# Generated by iptables-save v1.4.21 on Sat Dec 14 12:12:03 2019
+*nat
+:PREROUTING ACCEPT [1220:128046]
+:INPUT ACCEPT [165:20165]
+:OUTPUT ACCEPT [4:599]
+:POSTROUTING ACCEPT [4:599]
+:DOCKER - [0:0]
+:DOCKER-INGRESS - [0:0]
+-A PREROUTING -m addrtype --dst-type LOCAL -j DOCKER-INGRESS
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122  --dport 22 -j ACCEPT
+#-A INPUT -p tcp -s 118.185.255.98,182.76.9.122  --dport 161 -j ACCEPT
+------------------------------------------------------------------------
+for 173 DB qa
+
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+#-A INPUT -m state --state NEW -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138,172.16.100.178,172.16.98.133,172.16.106.116,3.6.48.236,13.127.226.165,122.161.52.172,182.69.181.230,182.69.183.171,182.69.179.180,182.69.177.21  --dport 22 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 80 -j ACCEPT
+-A INPUT -p udp -s 118.185.255.98,182.76.9.122,14.99.243.138,172.16.107.124,13.127.226.165  --dport 161 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 1167 -j ACCEPT
+#-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138 --dport 9104 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 9104 -j ACCEPT
+-A INPUT -p tcp -s 14.99.243.138,118.185.255.98,182.76.9.122,172.16.100.196,172.16.101.71,172.16.107.124,172.16.106.116,172.16.109.71,172.16.114.253,172.16.115.29,172.16.105.86,172.16.115.43,172.16.114.249,172.16.115.2,172.16.107.60,15.207.32.135,15.207.225.44,65.0.153.125,65.0.65.226,172.16.65.90,172.16.127.191,172.16.127.15,122.161.53.205,146.196.32.245,146.196.32.94,45.118.158.135,172.16.107.92 --dport 3306 -j ACCEPT
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138,172.16.100.196,172.16.101.71,172.16.107.124,172.16.106.116,172.16.109.71,172.16.114.253,172.16.115.29,172.16.105.86,172.16.115.43,172.16.114.249,172.16.115.2,172.16.107.60,172.16.100.178,15.207.32.135,15.207.225.44,65.0.153.125,65.0.65.226,3.6.48.236,172.16.65.90,172.16.127.191,172.16.127.15,122.161.53.205  --dport 27017 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 10050 -j ACCEPT
+-A INPUT -p udp -s 118.185.255.98,182.76.9.122,14.99.243.138  --dport 8084 -j ACCEPT
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138  --dport 8080 -j ACCEPT
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138 --dport 9100 -j ACCEPT
+-A INPUT -p tcp -s 118.185.255.98,182.76.9.122,14.99.243.138 --dport 8084 -j ACCEPT
+-A INPUT -s 184.75.223.235/32 -j DROP
+-A INPUT -s 66.240.236.116/32 -j DROP
+-A INPUT -s 31.220.1.83/32 -j DROP
+-A INPUT -s 167.94.146.78/32 -j DROP
+-A INPUT -s 107.170.227.28/32 -j DROP
+-A INPUT -s 94.102.61.20/32 -j DROP
+-A INPUT -s 103.203.57.21/32 -j DROP
+COMMIT
+-------------------------------
+
+
+
+
+-A PREROUTING -m addrtype --dst-type LOCAL -j DOCKER
+-A OUTPUT -m addrtype --dst-type LOCAL -j DOCKER-INGRESS
+-A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER
+-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+-A POSTROUTING -o docker_gwbridge -m addrtype --src-type LOCAL -j MASQUERADE
+-A POSTROUTING -s 172.18.0.0/16 ! -o docker_gwbridge -j MASQUERADE
+-A POSTROUTING -s 172.18.0.5/32 -d 172.18.0.5/32 -p tcp -m tcp --dport 9001 -j MASQUERADE
+-A DOCKER -i docker0 -j RETURN
+-A DOCKER -i docker_gwbridge -j RETURN
+-A DOCKER ! -i docker_gwbridge -p tcp -m tcp --dport 9001 -j DNAT --to-destination 172.18.0.5:9001
+-A DOCKER-INGRESS -j RETURN
+COMMIT
+# Completed on Sat Dec 14 12:12:03 2019
+# Generated by iptables-save v1.4.21 on Sat Dec 14 12:12:03 2019
+*mangle
+:PREROUTING ACCEPT [474385:500647229]
+:INPUT ACCEPT [380960:481822207]
+:FORWARD ACCEPT [15753:8826296]
+:OUTPUT ACCEPT [350465:129071027]
+:POSTROUTING ACCEPT [366218:137897323]
+COMMIT
+# Completed on Sat Dec 14 12:12:03 2019
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------lambok jar ---------------------------------------------------------------------------------------------
+
+1- download lambok jar
+2- copy in .m2/repository/org/projectlambok/lambok.jar
+3- run java -jar lambok.jar inside it will popup a page
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------To enable genral log of mysql 
+mkdir -p /var/log/mysql/
+
+
+
+
+1- stop mysql
+
+2- edit vim /etc/mysql/my.cnf
+
+3- Add the below given content in cnf file at the end of file
+
+
+general_log = 1
+general_log_file = /var/log/mysql/mysql.log
+
+4- start the mysql service .
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------login mysql with out password-----------------------------------------------------------------------
+
+1- stop mysql service
+
+2- edit my.cnf 
+
+add -->skip-grant-tables
+
+3- start the mysql service 
+
+4- mysql -uroot --hit enter
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------To Check mysql databases tables size in GB or MB-----------------------------------------------------------
+-----------------------------------------------------------------------MYSQL-QUeries--------------------------------------------------------------------------------------------
+
+ show tables size of specific databases like spfs.
+
+ SELECT  table_name AS `Table`,  round(((data_length + index_length) / 1024 / 1024), 2) `Size in MB`   FROM information_schema.TABLES WHERE table_schema = "spfs" ORDER BY
+  (DATA_LENGTH + INDEX_LENGTH) DESC;
+
+
+ show tables size of specific databases like hawa_new.
+
+ SELECT  table_name AS `Table`,  round(((data_length + index_length) / 1024 / 1024), 2) `Size in MB`   FROM information_schema.TABLES WHERE table_schema = "kepex" ORDER BY
+  (DATA_LENGTH + INDEX_LENGTH) DESC;
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------change root password of mysql if you forget-----------------------------------
+1- stop mysql service
+
+2- edit my.cnf 
+
+add -->skip-grant-tables
+
+3- start the mysql service 
+
+4- mysql -uroot --hit enter
+
+5- ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password@1234#';
+
+FLUSH PRIVILEGES;
+
+6- uncomment the skip-grant-tables in my.cnf
+
+7- restart the mysql service.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------ftppath--------------------------------------------------------------------------------------
+for SOLAR
+
+ cd /home/wind/SOLAR/
+ ls -lrth
+ cd TS/
+ ls -lrth
+ mkdir Pargi_Glob
+ chmod -R 770 Pargi_Glob
+ setfacl -R -m u:anadel:rx Pargi_Glob/
+ setfacl -R -m u:mpl:rx Pargi_Glob/
+ setfacl -R -m u:operation:rx Pargi_Glob/
+ setfacl -R -m u:kafka:rx Pargi_Glob/
+ useradd pargi -s /sbin/nologin 
+ passwd pargi ----> for simple password only use alphanumeric password not include special charcter( use simple password genrator from browser with 12 length).
+ setfacl -m u:pargi:rx  /home/wind/
+ setfacl -m u:pargi:rx  /home/wind/SOLAR/
+ setfacl -m u:pargi:rx  /home/wind/SOLAR/TS/
+ setfacl -R -m u:pargi:rwx  /home/wind/SOLAR/TS/Pargi_Glob/
+
+#  vim /home/script/archive-sync/solar-arch.sh --> and select the given path at line number 10 ( /home/script/archive-sync/solar-arch.txt ).
+       
+#  vim /home/script/archive-sync/solar-arch.txt --> inside the file carefully fill the path with press only one TAB not space.
+
+
+--
+FTP path for Ponnakal-Halo 
+
+ftp://wind21.50hertz.in/SOLAR/TS/HALO
+
+cd /home/wind/SOLAR/
+ ls -lrth
+ cd TS/
+ ls -lrth
+ mkdir HALO
+ chmod -R 770 HALO
+ setfacl -R -m u:anadel:rx HALO/
+ setfacl -R -m u:mpl:rx HALO/
+ setfacl -R -m u:operation:rx HALO/
+ setfacl -R -m u:kafka:rx HALO/
+ useradd ponnakal -s /sbin/nologin 
+ passwd ponnakal ----> for simple password only use alphanumeric password not include special charcter( use simple password genrator from browser with 12 length).
+ IWWBUROkxGhz
+ setfacl -m u:ponnakal:rx  /home/wind/
+ setfacl -m u:ponnakal:rx  /home/wind/SOLAR/
+ setfacl -m u:ponnakal:rx  /home/wind/SOLAR/TS/
+ setfacl -R -m u:ponnakal:rwx  /home/wind/SOLAR/TS/HALO/
+
+#  vim /home/script/archive-sync/solar-arch.sh --> and select the given path at line number 10 ( /home/script/archive-sync/solar-arch.txt ).
+
+   vim /home/script/archive-sync/solar-sync.txt       
+#  vim /home/script/archive-sync/solar-arch.txt --> inside the file carefully fill the path with press only one TAB not space.
+
+ponnakal
+
+
+servername- ftp.50hertz.in
+
+ip address- 15.207.32.135
+
+port no- 21
+
+username- ponnakal
+
+password- *********
+
+ftp path : ftp://ftp.50hertz.in/SOLAR/TS/HALO
+
+-------
+For WIND
+
+vim /home/script/archive-sync/wind-sync1.txt
+vim /home/script/archive-sync/wind-archtest.txt
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------dockerfile for UI---------------------------------------------------------------------------------------
+FROM tomcat:8-jre8
+
+MAINTAINER "Lokendra Singh<lokendra.s@50hertz.in>"
+ENV WORKSPACE ${WORKSPACE}
+ENV CATALINA_OPTS="-DEPM_HOME=/home/WEATHER_HOME -Dserver.mode=qa -Duser.timezone=Asia/Kolkata"
+ADD Weather_UI.war /usr/local/tomcat/webapps/
+ADD Weather-webapp.war /usr/local/tomcat/webapps/
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------opc-batch.jar------------------------------------------------------------------------------------------
+go to
+
+cd /home/DEPLOY/SOLAR/CURRENT/
+
+ cd /home/DEPLOY/SOLAR/
+ ls
+ cd CURRENT/
+ ls -lrth
+nohup java -Xmx700M -XX:+HeapDumpOnOutOfMemoryError -jar opc-batch.jar --mappingId=6203681af2d73f6b12a18c2f,62036986f2d73f6b12a18c33,62038c42f2d73f023163eb73,62038c5df2d73f023163eb77,62fc858f59af176e961286f5 &
+ ps aux | grep jar
+
+nohup java -Xmx700M -XX:+HeapDumpOnOutOfMemoryError -jar opc-batch.jar --mappingId=6203681af2d73f6b12a18c2f,62036986f2d73f6b12a18c33,62038c42f2d73f023163eb73,62038c5df2d73f023163eb77,62fc858f59af176e961286f5 &
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------epmbihar data is not coming in ftp due to ftp server restart so mount point are gone bcoz those are tempory mount--------------------------------
+note: epm bihardata is coming on ftp server through 101.53.155.78(ss root@01.53.155.78 -p 8924) .
+
+1- go to ftp server
+ 
+2- check on both location data is (/var/sftp/data/biharpr/bihar-scada/) and (/var/sftp/data/epm-internal/bihar-scada/) . where if data is not available on this location /var/sftp/data/epm-internal/bihar-scada. data on epm bihar UI is not going to refelect.
+
+3- mount --bind /var/sftp/data/epm-internal/bihar-scada/ /var/sftp/data/biharpr/bihar-scada/
+
+                                   or
+
+   mount -a /var/sftp/data/biharpr/bihar-scada/ /var/sftp/data/epm-internal/bihar-scada/
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
